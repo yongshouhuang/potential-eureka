@@ -12,7 +12,7 @@
 | 项 | 结论 | 状态 |
 |---|---|---|
 | R1 资源缺口→推荐产出源 | S1 已实装 `get_recommended_source`，单测 PASS | ✅ 已闭合 |
-| R3 MVP 式神数 | 12 = N3 / R4 / SR3 / SSR2，10–15 浮动 | ✅ 定稿 |
+| R3 MVP 式神数 | 13 = N3 / R4 / SR3 / SSR3，10–15 浮动 | ✅ 定稿（朱雀确认为火 SSR，放宽原 SSR2 锁） |
 | R2 锚点6 定义 | 授权增补锚点6（天象裂隙 / Boss 3D 演出钩子）于 art-bible §9 | ✅ 定稿 |
 | R4 免费十连文案 | 顶栏拆两格 ＋ 抽卡页内一句话 | ✅ 定稿 |
 | S2 末垂直切片 Playtest | 已采纳，quality-lead 产出计划 | ✅ 已规划 |
@@ -27,9 +27,9 @@
 - **遗留**：UX 渲染引导层（接 `economy:currency_changed` 显示产出源入口）属 S3 Demo 范畴，S1 交付数据接口即满足本 Story AC1–AC3。
 
 ### R3 · MVP 式神数 / 稀有度分布
-- **结论**：✅ 定稿 **12 = N3 / R4 / SR3 / SSR2**，允许在 **10–15** 浮动。
+- **结论**：✅ 定稿 **13 = N3 / R4 / SR3 / SSR3**，允许在 **10–15** 浮动（朱雀确认为火 SSR，原 SSR2 锁放宽至 SSR3）。
 - **依据**：`asset-spec.md §1.2` 已按此铺排；R / SR / SSR 卡框均被使用，分布健康无浪费。
-- **⚠️ 缺口预警**：当前 `data/shikigami/shikigami_defs.json` 仅 **8 个**（N2 / R2 / SR2 / SSR2）。距 12 差 4 个（N+1、R+2、SR+1）→ 列为 **S3 资产补齐项**（不阻塞 S1/S2 逻辑层，但 E5 Demo 图鉴需 12 立绘三视图）。
+- **缺口已补齐**：S3 已将 `data/shikigami/shikigami_defs.json` 从 8 张补齐至 **13 张**（N3 / R4 / SR3 / SSR3，含火 SSR 朱雀 `ssr_zhu_que`）。原定 4 张新卡（SR 朱雀 / 虬龙 / 虎威 / 火灵）+ 1 张（SSR 朱雀）共 5 张新卡。
 
 ### R2 · 锚点6 定义歧义
 - **结论**：✅ 授权在 `art/art-bible.md §9` 正式增补 **锚点6 · 天象裂隙 / Boss 3D 演出钩子**。

@@ -1,7 +1,7 @@
 # QA 计划 · Sprint S3（Phase 5 · 制作收口）
 
 > 编制：质量负责人 严守真（qa-s3）
-> 范围：Phase 5 Sprint S3 —— E5 Demo 串接（S1–S4）、E6-S5 可访问性单例（AccessibilitySettings + accessibility_changed）、E6-S6 MotionScale 总线 + CVD 后处理 shader、双端验证（PC 横屏 ≥1024 + 移动竖屏 <768）、式神资产补齐（shikigami_defs 8→12）、以及 S2 遗留 5 个 DoD 阻塞项（B-1/B-2/B-3 + C-3/C-4）的修复验证。
+> 范围：Phase 5 Sprint S3 —— E5 Demo 串接（S1–S4）、E6-S5 可访问性单例（AccessibilitySettings + accessibility_changed）、E6-S6 MotionScale 总线 + CVD 后处理 shader、双端验证（PC 横屏 ≥1024 + 移动竖屏 <768）、式神资产补齐（shikigami_defs 8→13）、以及 S2 遗留 5 个 DoD 阻塞项（B-1/B-2/B-3 + C-3/C-4）的修复验证。
 > 对齐：`docs/architecture/test-strategy.md`（T1–T7 + ConfigLoader 假表 + CI 门禁）、`production/epics/mvp-epics-stories.md`（E5 / E6-S5 / E6-S6 的 AC 与 S3 的 DoD）、`production/phase4-assembly.md` §3 S3 DoD、`production/s2-gate.md` §7（5 个遗留阻塞项）、`production/qa/qa-plan-s1.md` / `qa-plan-s2.md`（沿用测试命名/结构/断言风格）、`production/qa/s2-vertical-slice-playtest.md`（B-2 验证重点）。
 > 产出性质：纯文档（规划任务）。不写/不跑任何 `.gd` 测试代码，不修改 `.gd` / `project.godot`，不 `git commit`，不下载 GUT。所有测试用例名/断言要点为**待实现规格**，由 engineering-lead 据此落地、用户在本地 Godot+GUT 实跑。
 
@@ -34,7 +34,7 @@
 | **E6-S6** | MotionScale 总线 + CVD 后处理 | `test_accessibility.gd`/`test_cvd_filter.gd` 🆕 | 动效总线归零；CVD 按 mode 切换；静态等效反馈保留 |
 | **E5 闭环手感** | 核心闭环编排 + 双端 smoke | `tests/integration/test_e5_core_loop.gd` 🆕 + Playtest | 闭环 5 阶段无崩溃/死锁；埋点贯通 |
 | **双端验证** | ≥1024 / <768 不破版、热区≥44、形状冗余 | `tests/integration/test_dual_layout.gd` 🆕 | 断点无溢出/裁切；热区≥44；旋转/分辨率焦点保持 |
-| **式神补齐** | shikigami_defs 8→12（N3/R4/SR3/SSR2） | `test_shikigami_roster.gd` 🆕 | 计数=12、分布正确、bond 成员均在表、真实表结构一致 |
+| **式神补齐** | shikigami_defs 8→13（N3/R4/SR3/SSR3） | `test_shikigami_roster.gd` 🆕 | 计数=13、分布正确、bond 成员均在表、真实表结构一致 |
 
 ---
 
@@ -136,12 +136,12 @@
 
 ### 2.9 式神补齐 — `tests/test_shikigami_roster.gd` 🆕
 
-> 现状（phase4-assembly §4 R3）：MVP = 12（N3/R4/SR3/SSR2），当前 `shikigami_defs.json` 仅 8（N2/R2/SR2/SSR2），差 N+1/R+2/SR+1。属 S3 资产补齐项。
+> 现状（phase4-assembly §4 R3）：MVP = 13（N3/R4/SR3/SSR3），S3 已补齐至 13 张（含火 SSR 朱雀 `ssr_zhu_que`，原 SSR2 锁放宽至 SSR3）。
 
 | 测试名 | 覆盖 Story / AC | 断言要点（精确） |
 |---|---|---|
 | `test_roster_count_12` | R3 / S3 资产 | `ConfigLoader.load_table("shikigami")` 的 `shikigami` 字典 `size()==12` |
-| `test_rarity_distribution` | R3 / S3 资产 | 统计 rarity：N==3、R==4、SR==3、SSR==2（允许 10–15 浮动但分布须保证 R/SR/SSR 卡框均被使用） |
+| `test_rarity_distribution` | R3 / S3 资产 | 统计 rarity：N==3、R==4、SR==3、SSR==3（允许 10–15 浮动但分布须保证 R/SR/SSR 卡框均被使用） |
 | `test_all_bond_members_exist` | E4-S3 数据一致 | 读 `bond_combos` 各 group 的 `members`，逐一断言存在于 `shikigami_defs`（剑宗 4 人齐全，避免 B-2 编队空连携） |
 | `test_real_defs_structure_consistent` | 数据一致性（缓解 s2-qa B5） | 读**真实** `data/shikigami/shikigami_defs.json`（非注入假表）→ 断言每个式神含 `name/element/rarity/bond_tags/base_stats/skills`；`element` ∈ 五行；`base_stats` 含 hp/atk；克制环 data 引用的式神元素合法 |
 | `test_new_shikigami_reachable_in_loop` ⚠️场景 | E5-S1 | 新增式神可被抽卡产出/编队选用（集成场景冒烟） |
@@ -273,7 +273,7 @@
 | S1-C4b 死配置字段（min_daily 等） | s2-qa §3.1 | 建议 `ConfigLoader` schema 校验（不在 GUT 强制，CONCERNS） | CONCERNS |
 | S1-C4c 广播未断言（economy:reward_granted / gacha:shikigami_obtained） | s2-qa §3.1 | 建议补 `test_economy`/`test_gacha` 广播断言（P2） | CONCERNS |
 | S2 B5 真实数据表仅 Python 间接验证 | s2-qa §3.4 | `test_real_defs_structure_consistent`（§2.9） | CONCERNS→缓解 |
-| 式神补齐 8→12 | phase4 R3 | `test_shikigami_roster.gd`（§2.9） | CONCERNS（分布）/ HARD（计数≠12 致编队空） |
+| 式神补齐 8→13 | phase4 R3 | `test_shikigami_roster.gd`（§2.9） | PASS（分布 N3/R4/SR3/SSR3）/ HARD（计数≠13 致编队空） |
 
 ---
 
@@ -299,9 +299,9 @@
 - [ ] 扩 T5/E6-S6：`test_accessibility.gd` 补 reflow/CVD 接线断言；新增 `test_cvd_filter.gd`。
 - [ ] 落 E5 闭环：`tests/integration/test_e5_core_loop.gd` + Playtest 场景 F/G/H。
 - [ ] 落双端：`tests/integration/test_dual_layout.gd`（断点/热区/形状/焦点）。
-- [ ] 式神补齐至 12（N3/R4/SR3/SSR2），补 `test_shikigami_roster.gd`。
+- [ ] 式神补齐至 13（N3/R4/SR3/SSR3），补 `test_shikigami_roster.gd`。
 - [ ] 建 `production/qa/bugs/`，将 B-1/B-2/B-3/C-3/C-4 登记为正式条目跟踪。
 
 ---
 
-【一句话总结】S3 QA 计划承接 S2 门禁 5 个 DoD 阻塞项，给出可落地的测试矩阵（B-1 灼烧叠层 / **B-2 真实战斗流 `_bond_bonus`>0** / B-3 玩家选技 / **C-4 文件级 cache 回滚到上一可用版本** / C-3 GUT 进 CI 阻断合并）、T5+E6-S6 可访问性全绿、E5 双端闭环、式神 8→12 补齐；门控判定明确 B-1/B-2/C-3 与「E5 崩溃 / C-4 机制失效」不解决即 FAIL，B-3/C-4 测试缺口与双端/性能/手感偏差为 CONCERNS 级。纯文档产出，测试代码由 engineering-lead 据此实现、用户本地 Godot+GUT 实跑回填。
+【一句话总结】S3 QA 计划承接 S2 门禁 5 个 DoD 阻塞项，给出可落地的测试矩阵（B-1 灼烧叠层 / **B-2 真实战斗流 `_bond_bonus`>0** / B-3 玩家选技 / **C-4 文件级 cache 回滚到上一可用版本** / C-3 GUT 进 CI 阻断合并）、T5+E6-S6 可访问性全绿、E5 双端闭环、式神 8→13 补齐；门控判定明确 B-1/B-2/C-3 与「E5 崩溃 / C-4 机制失效」不解决即 FAIL，B-3/C-4 测试缺口与双端/性能/手感偏差为 CONCERNS 级。纯文档产出，测试代码由 engineering-lead 据此实现、用户本地 Godot+GUT 实跑回填。

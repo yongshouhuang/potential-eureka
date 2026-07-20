@@ -25,7 +25,8 @@
       "ssr_qing_long": "skill_qing_long_awakened",
       "ssr_bai_hu": "skill_bai_hu_awakened",
       "sr_you_ming": "skill_you_ming_awakened",
-      "sr_zhu_que": "skill_zhu_que_awakened"
+      "sr_zhu_que": "skill_zhu_que_awakened",
+      "ssr_zhu_que": "skill_zhu_que_awakened"
     }
   },
   "branches": {

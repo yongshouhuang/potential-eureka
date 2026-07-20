@@ -16,9 +16,9 @@
 | `production/s2-gate.md` | 5 个 S3 DoD 阻塞项（B-1/B-2/B-3/C-3/C-4）收敛 |
 | `production/phase4-assembly.md` §3 | S3 DoD（双端跑通 / 可访问性 CONCERN 闭合 / 埋点贯通 / 性能预算 / GUT CI 绿） |
 | `production/epics/mvp-epics-stories.md` | 复用 Epic/Story 格式与 E5/E6-S5/S6 基线 |
-| `production/phase4-decisions.md` | R3=12（N3/R4/SR3/SSR2，10–15 浮动）；R1 已在 S1 闭合，UI 引导留 S3 |
+| `production/phase4-decisions.md` | R3=13（N3/R4/SR3/SSR3，10–15 浮动，朱雀确认为火 SSR 放宽原 SSR2 锁）；R1 已在 S1 闭合，UI 引导留 S3 |
 | `production/design-review/s2-design-review.md` | B-1/B-2/B-3 缺口取证与机制缺口方向 |
-| `production/design-review/s3-design-review.md` | **B-1/B-2/B-3 设计定稿（§2.5/§3.4/§4.5/§6.2 为可直接落地工程 AC）；式神 8→12 归属（§5）；art 前置清单（§6.3）** |
+| `production/design-review/s3-design-review.md` | **B-1/B-2/B-3 设计定稿（§2.5/§3.4/§4.5/§6.2 为可直接落地工程 AC）；式神 8→13 归属（§5）；art 前置清单（§6.3）** |
 | `production/qa/s2-vertical-slice-playtest.md` | 双层验证模型 + 5 场景 × 6 维度手感验收口径（S3 收口须同时绿） |
 
 ### 0.2 优先级约定
@@ -41,7 +41,7 @@
 | **S3-B1 觉醒状态改写（burn）** | B-1 / E3-S3 AC2 | P0 | **design-s3 已定稿（§2.5）**；art 状态 VFX（§10） |
 | **S3-B2 羁绊实战发射** | B-2 / E4-S3 | P0 | **design-s3 已定稿（§3.4）**；art 横幅 VFX（§10） |
 | **S3-B3 玩家选技** | B-3 / E4-S4 | P0 | **design-s3 已定稿（§4.5）**；art 选技/气槽 UI（§10） |
-| **S3-Asset-Data 式神 8→12 数据** | R3 / §5 | P1 | **design-s3 已定稿归属（§5.3）** |
+| **S3-Asset-Data 式神 8→13 数据** | R3 / §5 | P1 | **design-s3 已定稿归属（§5.3）** |
 | **S3-Asset-Art 立绘/VFX 交付** | R3 / asset-spec §1.2 | P1 | art-director（§10，阻塞 E5 图鉴 12） |
 | **S3-UI-Battle 双端战斗 UI 落地** | E4-S6 / D-4 | P0 | art 状态 VFX/横幅/气槽/形状（§10） |
 | **S3-DualEnd 双端验证** | phase4 §3 | P0 | E5-S4 + S3-UI-Battle + E6-S1 |
@@ -149,8 +149,8 @@
 ## 5. S3 式神资产补齐（shikigami_defs 8 → 12）
 
 ### S3-Asset-Data 数据补齐（eng 独立完成）
-- **优先级**：P1｜**依赖**：**design-s3 §5.3 已定稿归属**（朱雀/虬龙/虎威/火灵），R3 分布不变
-- **AC1**：`data/shikigami/shikigami_defs.json` 补 4 条（N+1 / R+2 / SR+1）：`sr_zhu_que`(火/yu_zu)、`r_qiu_long`(水/long_zu)、`r_hu_wei`(金/hu_zu)、`n_huo_ling`(火/—)；稀有度分布 = N3/R4/SR3/SSR2，R/SR/SSR 卡框均被用。
+- **优先级**：P1｜**依赖**：**design-s3 §5.3 已定稿归属**（朱雀/虬龙/虎威/火灵），R3 分布更新为 **SSR3（朱雀确认为火 SSR，放宽原 SSR2 锁）**
+- **AC1**：`data/shikigami/shikigami_defs.json` 补 5 条（N+1 / R+2 / SR+1 / SSR+1）：`sr_zhu_que`(火 SR/yu_zu)、`r_qiu_long`(水/long_zu)、`r_hu_wei`(金/hu_zu)、`n_huo_ling`(火/—)、`ssr_zhu_que`(火 SSR/yu_zu，主理人确认朱雀为火 SSR)；稀有度分布 = N3/R4/SR3/SSR3，R/SR/SSR 卡框均被用。
 - **AC2**：`data/bond/bond_combos.json` 新增 `yu_zu / long_zu / hu_zu` 三组（band 同既有 `combo_2=0.08–0.12` / `combo_3plus=0.15–0.20`）；`cultivation_config.awaken.skills_by_shikigami` 扩充（朱雀→burn、青龙→破甲、白虎→气势、幽冥→中毒）。
 - **AC3**：`skill_defs.json` 含 12 基础技 + 4 觉醒技（§2.4）；既有 8 条字段结构向后兼容；新数据经 ConfigLoader 校验、无 orphan、与 bond_combos 成员一致。
 - **验收口径**：Python 数据一致性用例 + GUT ConfigLoader 注入 12 全绿；5 个羁绊组各 ≥2 成员、玩家侧五行齐全（金木土水火）。
@@ -222,7 +222,7 @@
 | 7 | **B-2 连携实战发射**：`compute_combo` 在 start_battle 后调用，实战 `_bond_bonus>0`，零跨 import 保持 | B-2 | S3-B2 |
 | 8 | **B-3 玩家选技**：step() 接收技能/目标，power 数据化，GUT 选技用例全绿 | B-3 | S3-B3 |
 | 9 | **C-4 文件级 cache 回滚 + 死字段清理**：GUT 全绿 + grep 零死字段 | C-4 | S3-C4 |
-| 10 | 式神资产补齐 8→12（数据 eng 完成；立绘 art 交付） | R3 | S3-Asset-Data / S3-Asset-Art |
+| 10 | 式神资产补齐 8→13（数据 eng 完成；立绘 art 交付） | R3 | S3-Asset-Data / S3-Asset-Art |
 | 11 | 资源断流引导收口（R1 UX 闭环） | phase4-def §2 | E5-S5 |
 | 12 | 控制清单末项（可访问性桥接）勾选 | phase4 §3 | E6-S5/S6 |
 
@@ -234,7 +234,7 @@
 
 ### 10.1 design-strategist（design-s3）— **已交付（工程前置满足）**
 - 交付物：`production/design-review/s3-design-review.md`
-- 覆盖：B-1（§2.5）、B-2（§3.4）、B-3（§4.5）、式神 8→12 归属（§5）、art 前置清单（§6.3）、可直接落地工程 AC（§6.2 E1–E10）
+- 覆盖：B-1（§2.5）、B-2（§3.4）、B-3（§4.5）、式神 8→13 归属（§5）、art 前置清单（§6.3）、可直接落地工程 AC（§6.2 E1–E10）
 - **结论**：eng 对 B-1/B-2/B-3 的实现前置已满足，可直接照 §6.2 落地，无需再等设计定稿。
 
 ### 10.2 art-director — **待交付（S3 阻塞项前置）**
@@ -249,7 +249,7 @@
 > eng 侧**数据层（S3-Asset-Data）可独立先行**，不阻塞逻辑；但视觉验收（图鉴 12 / 状态图标 / 横幅 / 气槽）须等 art-director 交付。
 
 ### 10.3 主理人 / 用户 — **拍板项（已于 S3 规划阶段确认「全部采纳定稿」）**
-1. ✅ **灼烧归属火系 SR「朱雀」**（非概念文档举例的火系 SSR）：R3 锁 SSR2（青龙/白虎）为金行不可改，灼烧落到火 SR 朱雀以保持 R3、完整交付机制——已采纳。
+1. ✅ **灼烧归属火系 SSR「朱雀」（`ssr_zhu_que`）**（主理人确认朱雀为火 SSR）：R3 由原 SSR2 锁放宽至 SSR3（青龙/白虎/朱雀），灼烧落到火 SSR 朱雀完整交付机制——已采纳。
 2. ✅ **B-3 `qi` 气资源门控**：采纳（默认实现；S3 工时紧可降级为无消耗/回合冷却，但须显式记录降级决策）。
 3. ✅ **式神 4 张归属**（§5.3）批准：朱雀=SR 承载灼烧、虬龙/虎威=R 补全龙/虎族、火灵=N 补火行。
 
@@ -272,4 +272,4 @@
 
 ## 12. 一句话总结（主理人）
 
-S3 规划已就位：**E5 Demo 4 故事（+R1 收口 E5-S5）+ E6-S5/S6 可访问性桥接 + 双端验证 + 式神 8→12**；S2 门禁 5 阻塞项全部转为 S3 Story（**B-1 觉醒改写 / B-2 连携发射 / B-3 玩家选技 / C-3 GUT CI / C-4 cache 回滚**），其中 **B-1/B-2/B-3 的工程 AC 已由 design-strategist 在 `s3-design-review.md` 定稿，eng 前置满足可直接落地**；art-director 仍须交付立绘/状态 VFX/横幅/气槽（§10.2）；唯一待拍板为「灼烧归属火 SR 朱雀」（§10.3）。S3 DoD（§9）列 12 项门禁检查，含双端跑通、可访问性 CONCERN 闭合、埋点贯通、性能预算、GUT 全量 CI 绿，及 5 个转入阻塞项闭环。本文件为规划文档，未改动任何代码/数据/资产。
+S3 规划已就位：**E5 Demo 4 故事（+R1 收口 E5-S5）+ E6-S5/S6 可访问性桥接 + 双端验证 + 式神 8→13**；S2 门禁 5 阻塞项全部转为 S3 Story（**B-1 觉醒改写 / B-2 连携发射 / B-3 玩家选技 / C-3 GUT CI / C-4 cache 回滚**），其中 **B-1/B-2/B-3 的工程 AC 已由 design-strategist 在 `s3-design-review.md` 定稿，eng 前置满足可直接落地**；art-director 仍须交付立绘/状态 VFX/横幅/气槽（§10.2）；唯一待拍板为「灼烧归属火 SR 朱雀」（§10.3）。S3 DoD（§9）列 12 项门禁检查，含双端跑通、可访问性 CONCERN 闭合、埋点贯通、性能预算、GUT 全量 CI 绿，及 5 个转入阻塞项闭环。本文件为规划文档，未改动任何代码/数据/资产。

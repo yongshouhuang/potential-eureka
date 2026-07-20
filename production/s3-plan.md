@@ -19,7 +19,7 @@ S3 = **Demo 串接 + 可访问性桥接 + 双端验证 + 式神资产补齐**，
 |---|---|---|
 | `production/epics/s3-epics-stories.md` | engineering-lead | Epic/Story 拆分 + DoD 12 项 + 跨成员依赖矩阵 |
 | `production/qa/qa-plan-s3.md` | quality-lead | 测试矩阵 + 双端/性能门 + C-3 CI 硬门禁 + FAIL 定义 |
-| `production/design-review/s3-design-review.md` | design-strategist | B-1/B-2/B-3 机制定稿（PASS）+ 式神 8→12 归属 |
+| `production/design-review/s3-design-review.md` | design-strategist | B-1/B-2/B-3 机制定稿（PASS）+ 式神 8→13 归属 |
 
 ---
 
@@ -33,7 +33,7 @@ S3 = **Demo 串接 + 可访问性桥接 + 双端验证 + 式神资产补齐**，
 | S3-B1 觉醒改写 | 灼烧叠层 + StatusManager + skill_defs 数据化 | P0 | design-s3 §2.5 已定稿 |
 | S3-B2 羁绊实战发射 | start_battle 后 compute_combo 发射 | P0 | design-s3 §3.4 已定稿 |
 | S3-B3 玩家选技 | step() 接收技能/目标 + qi 门控 | P0 | design-s3 §4.5 已定稿 |
-| S3-Asset-Data | 式神 8→12 数据 | P1(eng 先行) | design-s3 §5.3 已定稿 |
+| S3-Asset-Data | 式神 8→13 数据 | P1(eng 先行) | design-s3 §5.3 已定稿 |
 | S3-Asset-Art | 立绘/VFX 交付 | P1(阻塞视觉验收) | art-director 待交付 |
 | S3-UI-Battle | 双端战斗 UI 落地(E4-S6) | P0 | art VFX/横幅/气槽 |
 | S3-DualEnd | 双端验证 | P0 | E5-S4 + S3-UI-Battle |
@@ -59,9 +59,9 @@ S3 = **Demo 串接 + 可访问性桥接 + 双端验证 + 式神资产补齐**，
 
 ## 5. 用户拍板的设计决策（已采纳 · 全部采纳定稿）
 
-1. **灼烧归属火系 SR「朱雀」** — 概念文档原举例「火系 SSR 觉醒灼烧」不可行（R3 锁 SSR2=青龙/白虎均金行），改挂火 SR 朱雀，保持 R3 完整交付机制。
+1. **灼烧归属火系 SSR「朱雀」** — 主理人确认朱雀为火 SSR（`ssr_zhu_que`），R3 由原 SSR2 锁放宽至 **SSR3（青龙/白虎/朱雀）**，灼烧机制挂火 SSR 朱雀完整交付。
 2. **B-3 采纳 `qi` 气资源门控** — 每单位 qi_max=3、回合+1、觉醒技耗1；工时紧可降级为无消耗/回合冷却（须显式记录降级）。
-3. **4 张新卡归属批准** — 朱雀(SR/火/yu_zu)、虬龙(R/水/long_zu)、虎威(R/金/hu_zu)、火灵(N/火/—)；补玩家侧火行，解决「8 张无火行→灼烧无归属」隐藏缺口。
+3. **4 张新卡归属批准（B-1）** — 朱雀(火/yu_zu：SR `sr_zhu_que` + 主理人确认另补 SSR `ssr_zhu_que`)、虬龙(R/水/long_zu)、虎威(R/金/hu_zu)、火灵(N/火/—)；补玩家侧火行，解决「8 张无火行→灼烧无归属」隐藏缺口。
 
 ---
 
@@ -87,7 +87,7 @@ P0 门禁优先，避免返工：
 4. **S3-C4 文件级 cache 回滚 + 死字段清理**
 5. **E6-S5 / E6-S6 可访问性桥接**（闭合 Phase 3 CONCERN）
 6. **E5-S1/S3/S4/S5 Demo 串接 + 埋点贯通 + 旋转稳定 + R1 收口**
-7. **S3-Asset-Data 式神 8→12**（eng 先行，不依赖 art）
+7. **S3-Asset-Data 式神 8→13**（eng 先行，不依赖 art）
 8. **S3-UI-Battle + S3-DualEnd 双端验证**（依赖 art A2–A4 交付）
 9. **S3-Asset-Art 立绘/VFX**（art-director，排期对齐）
 10. **S3-Perf 性能预算**（包体<300MB / PC60·移动30-60fps）
@@ -109,7 +109,7 @@ P0 门禁优先，避免返工：
 | 7 | B-2 连携实战发射（实战 `_bond_bonus>0`，零跨 import） |
 | 8 | B-3 玩家选技（step() 接收技能/目标，power 数据化） |
 | 9 | C-4 文件级 cache 回滚 + 死字段清理 |
-| 10 | 式神资产补齐 8→12（数据 eng 完成；立绘 art 交付） |
+| 10 | 式神资产补齐 8→13（数据 eng 完成；立绘 art 交付） |
 | 11 | 资源断流引导收口（R1 UX 闭环） |
 | 12 | 控制清单末项（可访问性桥接）勾选 |
 
