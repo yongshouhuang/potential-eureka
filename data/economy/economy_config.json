@@ -1,0 +1,17 @@
+{
+  "currencies": {
+    "fu_lu":        { "daily_soft_cap": 12, "min_daily": 10, "can_accumulate": true },
+    "ling_yu":      { "hard": true },
+    "ling_qi":      { "daily_cap": 2000 },
+    "po_dan":       { "weekly_cap": 5 },
+    "jue_xing_shi": { "boss_only": true }
+  },
+  "free_ten_pull": { "amount": 10 },
+  "sources": {
+    "fu_lu":        ["推图", "日常", "章节首通"],
+    "ling_qi":      ["推图", "日常"],
+    "po_dan":       ["推图", "日常"],
+    "jue_xing_shi": ["Boss"],
+    "ling_yu":      ["商城"]
+  }
+}

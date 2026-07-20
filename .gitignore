@@ -1,0 +1,34 @@
+# ============================================================
+# Godot 4 — version-control ignore rules
+# Project: 仙侠卡牌 / Xianxia Card Battler  (Godot 4.3 LTS, GDScript, 2D-first)
+# Engine pin: see project.godot (config/features="4.3") and CLAUDE.md.
+#
+# Intent (S3-C3): ignore engine-generated / build artifacts only.
+# DO NOT ignore source: scripts/ data/ tests/ art/ production/ design/ docs/
+# are all tracked. Mono/C# rules are included for safety even though this
+# project is GDScript-only.
+# ============================================================
+
+# --- Godot generated cache & temp ---
+.godot/
+.import
+exported/
+*.tmp
+
+# --- Mono / C# build artifacts (unused here, kept per S3-C3 requirements) ---
+.mono/
+data_*/
+mono_crash.*.json
+
+# --- OS / editor junk ---
+.DS_Store
+Thumbs.db
+*.swp
+
+# ============================================================
+# NOTE: GUT (addons/gut) is intentionally NOT ignored.
+# Per CLAUDE.md it is "由用户安装" (installed locally by the dev) and is
+# fetched at CI runtime into addons/gut, so it is never committed from CI.
+# If a developer chooses to VENDOR GUT into the repo, it will be tracked
+# correctly because addons/ is not ignored above.
+# ============================================================

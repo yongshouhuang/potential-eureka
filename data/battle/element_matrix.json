@@ -1,0 +1,23 @@
+{
+  "_doc": "ElementMatrixDef — 五行网状克制 + 相生（B4 / E4-S2 / T2）。ke[X]=Y 表示 X 克 Y；sheng[X]=Y 表示 X 生 Y。倍率区间为 GDD §B4 数值。",
+  "ke": {
+    "metal": "wood",
+    "wood": "earth",
+    "earth": "water",
+    "water": "fire",
+    "fire": "metal"
+  },
+  "sheng": {
+    "wood": "fire",
+    "fire": "earth",
+    "earth": "metal",
+    "metal": "water",
+    "water": "wood"
+  },
+  "advantage_min": 1.25,
+  "advantage_max": 1.35,
+  "disadvantage_min": 0.7,
+  "disadvantage_max": 0.8,
+  "sheng_bonus_min": 1.02,
+  "sheng_bonus_max": 1.05
+}

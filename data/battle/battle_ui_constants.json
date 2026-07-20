@@ -1,0 +1,12 @@
+{
+  "_doc": "E4-S6 双端战斗视觉适配（仅数据/常量，不写 UI 场景）。五行用「图标+形状冗余」；热区最小 44px（art-bible §7/§8）。",
+  "element_shapes": {
+    "metal": "triangle",
+    "wood": "circle",
+    "earth": "square",
+    "water": "diamond",
+    "fire": "pentagon"
+  },
+  "shape_redundancy": true,
+  "hotzone_min_px": 44
+}

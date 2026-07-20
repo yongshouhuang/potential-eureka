@@ -1,0 +1,151 @@
+name: GUT Tests (Godot 4.3)
+
+# ============================================================================
+# S3-C3 · Version control + CI test gate.
+#
+# PURPOSE
+#   Run the project's GUT test suite headlessly on every push to the default
+#   branch and on every pull request. If ANY test fails, GUT exits the engine
+#   with a NON-ZERO code (-gexit) and the GitHub check turns RED. This is the
+#   "fail = red" gate requested by S3-C3.
+#
+# PLATFORM ASSUMPTION (default)
+#   GitHub Actions, runner = ubuntu-latest. This is the default CI platform for
+#   this workflow. The project itself is engine-agnostic; if it actually lives
+#   on GitLab CI / Gitea / self-hosted runners, see "ADAPTING TO OTHER CI"
+#   at the bottom — only the `on:` trigger and the runner image change.
+#
+# LOCAL EQUIVALENT (run from project root, after installing GUT into addons/gut)
+#   godot --headless --path . -s res://addons/gut/gut_cmdln.gd -gexit \
+#         -gdir=res://tests -gprefix=test_ -gsuffix=.gd -glog=1
+#   Install GUT locally: download https://github.com/bitwes/Gut/releases/tag/v9.4.0
+#   and extract its `addons/gut` into the project, or add it via the AssetLib /
+#   as a git submodule. No plugin activation is required for the CLI runner.
+# ============================================================================
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+# Least-privilege token for a read-only CI test run.
+permissions:
+  contents: read
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: gut-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Must match the project pin in project.godot (config/features="4.3") and CLAUDE.md (Godot 4.3 LTS).
+  GODOT_VERSION: "4.3-stable"
+  # GUT 9.4.0 is the version compatible with Godot 4.3.x–4.4.x (official GUT↔Godot table).
+  # Source-verified: addons/gut/cli/gut_cli.gd at tag v9.4.0 accepts -gexit / -gdir / -gprefix / -gsuffix / -glog.
+  GUT_VERSION: "9.4.0"
+
+jobs:
+  gut:
+    name: Run GUT test suite
+    runs-on: ubuntu-latest        # headless Godot 4 on Linux; see ADAPTING notes for Win/macOS
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Godot ${{ env.GODOT_VERSION }}
+        # lihop/setup-godot wraps the official godotengine/godot-builds releases,
+        # caches the binary, and puts `godot` on PATH. Pinned to major tag @v3.
+        # If this action is unavailable on your runner, replace with a direct
+        # download from godotengine/godot-builds (see ADAPTING notes).
+        uses: lihop/setup-godot@v3
+        with:
+          version: ${{ env.GODOT_VERSION }}
+
+      - name: Install Linux dependencies for headless Godot
+        # Godot 4's --headless still links against X11/GL/audio/pulse libs and
+        # probes for a display. On a bare ubuntu runner these must be present,
+        # and xvfb supplies a virtual display so the engine can initialize.
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends \
+            xvfb libx11-6 libxcursor1 libxrandr2 libxinerama1 \
+            libgl1 libglib2.0-0 libpulse0 libudev1 libfontconfig1
+
+      - name: Fetch GUT test framework (not vendored in repo)
+        # CLAUDE.md: GUT is "由用户安装" (installed locally by the dev) and is
+        # intentionally NOT committed, so CI downloads the exact pinned version
+        # into addons/gut at runtime. The CLI runner only needs the script at
+        # res://addons/gut/gut_cmdln.gd — no plugin activation required.
+        # The archive top-level folder name can vary, so addons/gut is located
+        # dynamically rather than hard-coded.
+        run: |
+          curl -fsSL -o gut.zip "https://github.com/bitwes/Gut/archive/refs/tags/v${GUT_VERSION}.zip"
+          unzip -o -q gut.zip
+          SRC=$(find . -maxdepth 3 -type d -path '*/addons/gut' | head -n1)
+          mkdir -p addons
+          mv "$SRC" addons/gut
+          rm -rf "${SRC%/addons/gut}" gut.zip
+          echo "GUT v${GUT_VERSION} installed at addons/gut"
+
+      - name: Cache Godot import (.godot)
+        uses: actions/cache@v4
+        with:
+          path: .godot
+          key: godot-import-${{ env.GODOT_VERSION }}-gut${{ env.GUT_VERSION }}-${{ hashFiles('project.godot', 'scripts/**/*.gd', 'tests/**/*.gd', 'addons/gut/**/*.gd') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-gut${{ env.GUT_VERSION }}-
+
+      - name: Run GUT tests (fail = red)
+        run: |
+          xvfb-run -a godot --headless --path . \
+            -s res://addons/gut/gut_cmdln.gd \
+            -gexit \
+            -gdir=res://tests \
+            -gprefix=test_ \
+            -gsuffix=.gd \
+            -glog=2
+        # ----------------------------------------------------------------------
+        # Flag rationale (all source-verified against GUT v9.4.0):
+        #   -gexit        GUT exits the engine after the run and returns a
+        #                 NON-ZERO exit code when any test fails
+        #                 (cli/gut_cli.gd: get_tree().quit(1) on failure paths).
+        #                 This is what turns the GitHub check RED.
+        #   -gdir=res://tests   Run every script discovered under res://tests
+        #                 (currently 14 test_*.gd files).
+        #   -gprefix/-gsuffix   Default test discovery (test_*.gd). We do NOT use
+        #                 "-ginclude=*.gd" — that flag does NOT exist in GUT 9.x
+        #                 and would be treated as an unknown argument, forcing
+        #                 quit(1) and producing a FALSE-RED build.
+        #   -glog=2       Verbose per-test output for CI failure diagnostics
+        #                 (use -glog=1 locally for a compact summary).
+        # ----------------------------------------------------------------------
+
+# ============================================================================
+# ADAPTING TO OTHER CI PLATFORMS
+# ----------------------------------------------------------------------------
+# GitLab CI:
+#   Replace the `on:` block with:
+#     stages: [test]
+#     gut:
+#       stage: test
+#       image: ubuntu:22.04
+#       script:
+#         - (install godot + deps + GUT as above)
+#         - xvfb-run -a godot --headless --path . -s res://addons/gut/gut_cmdln.gd -gexit -gdir=res://tests -gprefix=test_ -gsuffix=.gd -glog=2
+#   The GUT command, flags, and -gexit semantics are identical — only the
+#   runner definition and trigger syntax change.
+#
+# Windows / macOS runners (GitHub Actions):
+#   - Drop the "Install Linux dependencies" step (no apt/xvfb).
+#   - On Windows use `runs-on: windows-latest` and run godot directly
+#     (no xvfb-run wrapper); on macOS use `runs-on: macos-latest`.
+#   - lihop/setup-godot supports windows-latest / macos-latest as well.
+#
+# Pinned Godot download (no third-party action):
+#   - uses: actions/checkout@v4
+#   - run: |
+#       curl -fsSL -o godot.zip "https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_linux.x86_64.zip"
+#       unzip -o -q godot.zip && chmod +x Godot_v${{ env.GODOT_VERSION }}_linux.x86_64
+#       echo "$PWD" >> $GITHUB_PATH
+#     (then invoke as `godot` as above)
+# ============================================================================

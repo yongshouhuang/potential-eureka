@@ -1,0 +1,38 @@
+; Xianxia Card Battler — Godot 4.x project configuration (Phase 5 · Sprint S1)
+; Engine pin: Godot 4.3 LTS (see CLAUDE.md). 2D-first, GDScript.
+; Headless GUT tests only require the [autoload] singletons below; no main scene is needed.
+
+config_version=5
+
+[application]
+config/name="仙侠卡牌 Xianxia Card Battler"
+config/description="仙侠卡牌 — MVP 核心循环 (经济/抽卡/存档骨架)"
+run/main_scene=""
+config/features=PackedStringArray("4.3")
+config/icon=""
+
+[autoload]
+EventBus="*res://scripts/autoload/EventBus.gd"
+GameState="*res://scripts/autoload/GameState.gd"
+ConfigLoader="*res://scripts/autoload/ConfigLoader.gd"
+AccessibilitySettings="*res://scripts/autoload/AccessibilitySettings.gd"
+UIThemeController="*res://scripts/autoload/UIThemeController.gd"
+InputBridge="*res://scripts/autoload/InputBridge.gd"
+SaveManager="*res://scripts/autoload/SaveManager.gd"
+CloudSaveService="*res://scripts/autoload/CloudSaveService.gd"
+EconomyManager="*res://scripts/autoload/EconomyManager.gd"
+GachaManager="*res://scripts/autoload/GachaManager.gd"
+CultivationManager="*res://scripts/autoload/CultivationManager.gd"
+BondManager="*res://scripts/autoload/BondManager.gd"
+DeckBuilder="*res://scripts/autoload/DeckBuilder.gd"
+BattleManager="*res://scripts/autoload/BattleManager.gd"
+StatusManager="*res://scripts/autoload/StatusManager.gd"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+
+[display]
+; Default window; responsive layout is driven by UIThemeController at runtime.
+window/size/viewport_width=1280
+window/size/viewport_height=720

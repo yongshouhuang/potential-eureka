@@ -1,0 +1,671 @@
+{
+  "_doc": "ChapterDef — 前 3 章，每章 8 普通关 + 1 Boss（B4 / E4-S5）。reward 经 EconomyManager 回流。",
+  "chapters": [
+    {
+      "id": 1,
+      "name": "第1章",
+      "stages": [
+        {
+          "id": 1,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c1_n1_e1",
+              "name": "杂兵1-1",
+              "element": "earth",
+              "stats": {
+                "hp": 126,
+                "atk": 29
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 2,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c1_n2_e1",
+              "name": "杂兵1-2",
+              "element": "water",
+              "stats": {
+                "hp": 132,
+                "atk": 30
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 3,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c1_n3_e1",
+              "name": "杂兵1-3",
+              "element": "fire",
+              "stats": {
+                "hp": 138,
+                "atk": 31
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 4,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c1_n4_e1",
+              "name": "杂兵1-4",
+              "element": "metal",
+              "stats": {
+                "hp": 144,
+                "atk": 32
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 5,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c1_n5_e1",
+              "name": "杂兵1-5",
+              "element": "wood",
+              "stats": {
+                "hp": 150,
+                "atk": 33
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 6,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c1_n6_e1",
+              "name": "杂兵1-6",
+              "element": "earth",
+              "stats": {
+                "hp": 156,
+                "atk": 34
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 7,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c1_n7_e1",
+              "name": "杂兵1-7",
+              "element": "water",
+              "stats": {
+                "hp": 162,
+                "atk": 35
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 8,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c1_n8_e1",
+              "name": "杂兵1-8",
+              "element": "fire",
+              "stats": {
+                "hp": 168,
+                "atk": 36
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 9,
+          "boss": true,
+          "enemies": [
+            {
+              "id": "c1_boss",
+              "name": "章节1首领",
+              "element": "wood",
+              "stats": {
+                "hp": 480,
+                "atk": 56
+              }
+            },
+            {
+              "id": "c1_boss_add",
+              "name": "章节1护卫",
+              "element": "earth",
+              "stats": {
+                "hp": 240,
+                "atk": 28
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              2,
+              4
+            ],
+            "po_dan": 1,
+            "jue_xing_shi": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "第2章",
+      "stages": [
+        {
+          "id": 1,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c2_n1_e1",
+              "name": "杂兵2-1",
+              "element": "water",
+              "stats": {
+                "hp": 166,
+                "atk": 37
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 2,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c2_n2_e1",
+              "name": "杂兵2-2",
+              "element": "fire",
+              "stats": {
+                "hp": 172,
+                "atk": 38
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 3,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c2_n3_e1",
+              "name": "杂兵2-3",
+              "element": "metal",
+              "stats": {
+                "hp": 178,
+                "atk": 39
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 4,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c2_n4_e1",
+              "name": "杂兵2-4",
+              "element": "wood",
+              "stats": {
+                "hp": 184,
+                "atk": 40
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 5,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c2_n5_e1",
+              "name": "杂兵2-5",
+              "element": "earth",
+              "stats": {
+                "hp": 190,
+                "atk": 41
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 6,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c2_n6_e1",
+              "name": "杂兵2-6",
+              "element": "water",
+              "stats": {
+                "hp": 196,
+                "atk": 42
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 7,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c2_n7_e1",
+              "name": "杂兵2-7",
+              "element": "fire",
+              "stats": {
+                "hp": 202,
+                "atk": 43
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 8,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c2_n8_e1",
+              "name": "杂兵2-8",
+              "element": "metal",
+              "stats": {
+                "hp": 208,
+                "atk": 44
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 9,
+          "boss": true,
+          "enemies": [
+            {
+              "id": "c2_boss",
+              "name": "章节2首领",
+              "element": "earth",
+              "stats": {
+                "hp": 640,
+                "atk": 72
+              }
+            },
+            {
+              "id": "c2_boss_add",
+              "name": "章节2护卫",
+              "element": "water",
+              "stats": {
+                "hp": 320,
+                "atk": 36
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              2,
+              4
+            ],
+            "po_dan": 1,
+            "jue_xing_shi": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "第3章",
+      "stages": [
+        {
+          "id": 1,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c3_n1_e1",
+              "name": "杂兵3-1",
+              "element": "fire",
+              "stats": {
+                "hp": 206,
+                "atk": 45
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 2,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c3_n2_e1",
+              "name": "杂兵3-2",
+              "element": "metal",
+              "stats": {
+                "hp": 212,
+                "atk": 46
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 3,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c3_n3_e1",
+              "name": "杂兵3-3",
+              "element": "wood",
+              "stats": {
+                "hp": 218,
+                "atk": 47
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 4,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c3_n4_e1",
+              "name": "杂兵3-4",
+              "element": "earth",
+              "stats": {
+                "hp": 224,
+                "atk": 48
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 5,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c3_n5_e1",
+              "name": "杂兵3-5",
+              "element": "water",
+              "stats": {
+                "hp": 230,
+                "atk": 49
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 6,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c3_n6_e1",
+              "name": "杂兵3-6",
+              "element": "fire",
+              "stats": {
+                "hp": 236,
+                "atk": 50
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 7,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c3_n7_e1",
+              "name": "杂兵3-7",
+              "element": "metal",
+              "stats": {
+                "hp": 242,
+                "atk": 51
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 8,
+          "boss": false,
+          "enemies": [
+            {
+              "id": "c3_n8_e1",
+              "name": "杂兵3-8",
+              "element": "wood",
+              "stats": {
+                "hp": 248,
+                "atk": 52
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              1,
+              3
+            ],
+            "po_dan": 0,
+            "jue_xing_shi": 0
+          }
+        },
+        {
+          "id": 9,
+          "boss": true,
+          "enemies": [
+            {
+              "id": "c3_boss",
+              "name": "章节3首领",
+              "element": "water",
+              "stats": {
+                "hp": 800,
+                "atk": 88
+              }
+            },
+            {
+              "id": "c3_boss_add",
+              "name": "章节3护卫",
+              "element": "fire",
+              "stats": {
+                "hp": 400,
+                "atk": 44
+              }
+            }
+          ],
+          "reward": {
+            "fu_lu": [
+              2,
+              4
+            ],
+            "po_dan": 1,
+            "jue_xing_shi": 1
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "_doc": "SkillDef — 技能定义（B-1/B-3 数据驱动）。power 取代硬编码 1.0；status_on_hit 承载觉醒改写机制。数值区间用 min/max，运行取中点（对齐养成确定性约定）。",
+  "skills": {
+    "skill_qing_long_base":     { "element": "metal", "power": 1.00, "status_on_hit": null },
+    "skill_qing_long_awakened": { "element": "metal", "power": 1.15,
+        "status_on_hit": { "type": "armor_break", "stacks": 1, "duration": 3 } },
+    "skill_bai_hu_base":       { "element": "metal", "power": 1.00, "status_on_hit": null },
+    "skill_bai_hu_awakened":   { "element": "metal", "power": 1.10,
+        "status_on_hit": { "type": "momentum", "stacks": 1, "duration": 3 } },
+    "skill_you_ming_base":     { "element": "wood",  "power": 1.00, "status_on_hit": null },
+    "skill_you_ming_awakened": { "element": "wood",  "power": 1.10,
+        "status_on_hit": { "type": "poison", "stacks": 1, "duration": 3 } },
+    "skill_xuan_feng_base":    { "element": "wood",  "power": 1.00, "status_on_hit": null },
+    "skill_tie_jia_base":      { "element": "earth", "power": 1.00, "status_on_hit": null },
+    "skill_qing_yu_base":      { "element": "water", "power": 1.00, "status_on_hit": null },
+    "skill_cao_li_base":       { "element": "wood",  "power": 1.00, "status_on_hit": null },
+    "skill_shan_tong_base":    { "element": "earth", "power": 1.00, "status_on_hit": null },
+    "skill_zhu_que_base":      { "element": "fire",  "power": 1.00, "status_on_hit": null },
+    "skill_zhu_que_awakened":  { "element": "fire",  "power": 1.10,
+        "status_on_hit": { "type": "burn", "stacks": 1, "duration": 3 } },
+    "skill_qiu_long_base":     { "element": "water", "power": 1.00, "status_on_hit": null },
+    "skill_hu_wei_base":       { "element": "metal", "power": 1.00, "status_on_hit": null },
+    "skill_huo_ling_base":     { "element": "fire",  "power": 1.00, "status_on_hit": null }
+  }
+}

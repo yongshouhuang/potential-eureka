@@ -1,0 +1,17 @@
+{
+  "_doc": "ShikigamiDef — 式神基础定义（B3 读 base_stats/element/bond_tags/skills；经 ConfigLoader 'shikigami' 表）。",
+  "shikigami": {
+    "ssr_qing_long": { "name": "青龙", "element": "metal", "rarity": "SSR", "bond_tags": ["jian_zong", "long_zu"], "base_stats": { "hp": 600, "atk": 150 }, "skills": ["skill_qing_long_base"] },
+    "ssr_bai_hu":    { "name": "白虎", "element": "metal", "rarity": "SSR", "bond_tags": ["jian_zong", "hu_zu"], "base_stats": { "hp": 580, "atk": 145 }, "skills": ["skill_bai_hu_base"] },
+    "sr_you_ming":   { "name": "幽冥", "element": "wood",  "rarity": "SR",  "bond_tags": ["jian_zong"], "base_stats": { "hp": 500, "atk": 120 }, "skills": ["skill_you_ming_base"] },
+    "sr_xuan_feng":  { "name": "玄风", "element": "wood",  "rarity": "SR",  "bond_tags": ["jian_zong"], "base_stats": { "hp": 490, "atk": 118 }, "skills": ["skill_xuan_feng_base"] },
+    "r_tie_jia":     { "name": "铁甲", "element": "earth", "rarity": "R",   "bond_tags": ["tie_bi"], "base_stats": { "hp": 520, "atk": 100 }, "skills": ["skill_tie_jia_base"] },
+    "r_qing_yu":     { "name": "青羽", "element": "water", "rarity": "R",   "bond_tags": ["yu_zu"], "base_stats": { "hp": 470, "atk": 105 }, "skills": ["skill_qing_yu_base"] },
+    "n_cao_li":      { "name": "草隶", "element": "wood",  "rarity": "N",   "bond_tags": [], "base_stats": { "hp": 400, "atk": 80 },  "skills": ["skill_cao_li_base"] },
+    "n_shan_tong":   { "name": "山童", "element": "earth", "rarity": "N",   "bond_tags": ["tie_bi"], "base_stats": { "hp": 410, "atk": 78 }, "skills": ["skill_shan_tong_base"] },
+    "sr_zhu_que":    { "name": "朱雀", "element": "fire",  "rarity": "SR",  "bond_tags": ["yu_zu"], "base_stats": { "hp": 510, "atk": 120 }, "skills": ["skill_zhu_que_base"] },
+    "r_qiu_long":    { "name": "虬龙", "element": "water", "rarity": "R",   "bond_tags": ["long_zu"],"base_stats": { "hp": 480, "atk": 95 },  "skills": ["skill_qiu_long_base"] },
+    "r_hu_wei":      { "name": "虎威", "element": "metal", "rarity": "R",   "bond_tags": ["hu_zu"],  "base_stats": { "hp": 485, "atk": 95 },  "skills": ["skill_hu_wei_base"] },
+    "n_huo_ling":    { "name": "火灵", "element": "fire",  "rarity": "N",   "bond_tags": [],        "base_stats": { "hp": 400, "atk": 70 },  "skills": ["skill_huo_ling_base"] }
+  }
+}

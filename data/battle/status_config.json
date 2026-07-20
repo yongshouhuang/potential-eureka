@@ -1,0 +1,35 @@
+{
+  "_doc": "StatusConfig — 状态系统规则（B-1/B-3 数据驱动）。kind=dot 产生每 tick DoT；kind=debuff 降低目标承受直接伤害；kind=selfbuff 提升持有者直接伤害。vs_<element> 通用覆盖：水克火压制(max_stacks/duration 收紧)、火克木增益(dot_mult)。所有系数为 GDD 区间中点（确定性）。",
+  "status": {
+    "burn": {
+      "kind": "dot",
+      "max_stacks": 3,
+      "duration": 3,
+      "dot_pct_per_stack_min": 0.02,
+      "dot_pct_per_stack_max": 0.04,
+      "vs_water": { "max_stacks": 1, "duration": 1 },
+      "vs_wood":  { "dot_mult": 1.20 }
+    },
+    "poison": {
+      "kind": "dot",
+      "max_stacks": 3,
+      "duration": 3,
+      "dot_pct_per_stack_min": 0.02,
+      "dot_pct_per_stack_max": 0.04,
+      "vs_metal": { "dot_mult": 1.20 },
+      "vs_fire":  { "max_stacks": 1, "duration": 1 }
+    },
+    "armor_break": {
+      "kind": "debuff",
+      "max_stacks": 3,
+      "duration": 3,
+      "pct_per_stack": 0.05
+    },
+    "momentum": {
+      "kind": "selfbuff",
+      "max_stacks": 3,
+      "duration": 3,
+      "dmg_per_stack": 0.04
+    }
+  }
+}

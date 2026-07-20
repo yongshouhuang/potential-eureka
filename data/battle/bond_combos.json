@@ -1,0 +1,45 @@
+{
+  "_doc": "BondGroupDef — 静态连携表（A1 / E4-S3 / T6）。同组式神同队：2 人 +8~12% / 3+ 人 +15~20%。compute_combo 取最优组。",
+  "groups": {
+    "jian_zong": {
+      "name": "剑宗",
+      "members": ["ssr_qing_long", "ssr_bai_hu", "sr_you_ming", "sr_xuan_feng"],
+      "combo_2_min": 0.08,
+      "combo_2_max": 0.12,
+      "combo_3plus_min": 0.15,
+      "combo_3plus_max": 0.20
+    },
+    "tie_bi": {
+      "name": "铁壁",
+      "members": ["r_tie_jia", "n_shan_tong"],
+      "combo_2_min": 0.08,
+      "combo_2_max": 0.12,
+      "combo_3plus_min": 0.15,
+      "combo_3plus_max": 0.20
+    },
+    "yu_zu": {
+      "name": "羽族",
+      "members": ["r_qing_yu", "sr_zhu_que"],
+      "combo_2_min": 0.08,
+      "combo_2_max": 0.12,
+      "combo_3plus_min": 0.15,
+      "combo_3plus_max": 0.20
+    },
+    "long_zu": {
+      "name": "龙族",
+      "members": ["ssr_qing_long", "r_qiu_long"],
+      "combo_2_min": 0.08,
+      "combo_2_max": 0.12,
+      "combo_3plus_min": 0.15,
+      "combo_3plus_max": 0.20
+    },
+    "hu_zu": {
+      "name": "虎族",
+      "members": ["ssr_bai_hu", "r_hu_wei"],
+      "combo_2_min": 0.08,
+      "combo_2_max": 0.12,
+      "combo_3plus_min": 0.15,
+      "combo_3plus_max": 0.20
+    }
+  }
+}

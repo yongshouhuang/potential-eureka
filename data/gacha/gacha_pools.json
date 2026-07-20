@@ -1,0 +1,32 @@
+{
+  "pools": {
+    "standard": {
+      "id": "standard",
+      "type": "standard",
+      "rarity_rates": { "SSR": 0.02, "SR": 0.10, "R": 0.35, "N": 0.53 },
+      "soft_pity": 50,
+      "hard_pity": 90,
+      "shikigami_by_rarity": {
+        "SSR": ["ssr_qing_long", "ssr_bai_hu", "ssr_zhu_que"],
+        "SR":  ["sr_you_ming", "sr_xuan_feng", "sr_li_huo"],
+        "R":   ["r_tie_jia", "r_qing_yu", "r_feng_ming"],
+        "N":   ["n_cao_li", "n_shan_tong", "n_shi_jie"]
+      }
+    },
+    "newbie": {
+      "id": "newbie",
+      "type": "newbie",
+      "rarity_rates": { "SSR": 0.02, "SR": 0.10, "R": 0.35, "N": 0.53 },
+      "soft_pity": 50,
+      "hard_pity": 90,
+      "half_price_pulls": 20,
+      "starter_sr_id": "sr_starter_xin",
+      "shikigami_by_rarity": {
+        "SSR": ["ssr_qing_long", "ssr_bai_hu"],
+        "SR":  ["sr_starter_xin", "sr_you_ming", "sr_xuan_feng"],
+        "R":   ["r_tie_jia", "r_qing_yu"],
+        "N":   ["n_cao_li", "n_shan_tong"]
+      }
+    }
+  }
+}

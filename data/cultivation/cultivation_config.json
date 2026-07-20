@@ -1,0 +1,36 @@
+{
+  "_doc": "GrowthCurveDef — 养成曲线（B3 / E3）。所有区间为 GDD §B3 数值方向，确定性用区间中点（见 CultivationManager 注释）。",
+  "breakthrough": {
+    "max_tier": 6,
+    "level_cap_per_tier": [20, 36, 52, 64, 72, 80],
+    "attr_gain_pct_min": 0.08,
+    "attr_gain_pct_max": 0.12,
+    "passive_slots_per_tier": [1, 2, 3, 4, 5, 6]
+  },
+  "level_curve": {
+    "hp_per_level_pct_min": 0.02,
+    "hp_per_level_pct_max": 0.03,
+    "atk_per_level_pct_min": 0.02,
+    "atk_per_level_pct_max": 0.03
+  },
+  "upgrade": {
+    "ling_qi_per_level": 50
+  },
+  "breakthrough_cost": {
+    "po_dan_per_tier": 1,
+    "fragments_per_tier": 5
+  },
+  "awaken": {
+    "tier_threshold": 3,
+    "skills_by_shikigami": {
+      "ssr_qing_long": "skill_qing_long_awakened",
+      "ssr_bai_hu": "skill_bai_hu_awakened",
+      "sr_you_ming": "skill_you_ming_awakened",
+      "sr_zhu_que": "skill_zhu_que_awakened"
+    }
+  },
+  "branches": {
+    "sword": { "passive": "jian_xiu_passive", "name": "剑修", "dmg_mult": 0.10 },
+    "body":  { "passive": "ti_xiu_passive",  "name": "体修", "hp_mult": 0.10 }
+  }
+}
