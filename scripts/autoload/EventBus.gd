@@ -65,6 +65,19 @@ signal accessibility_changed(snapshot: Dictionary)
 #        调用 BondManager.compute_combo(GameState.deck) 发射；BattleManager 仅订阅不发射（E4-S3 AC2）。）
 signal bond_combo(group_id: String, bonus_pct: float)
 
+# status:* （S3-UI-Battle 状态图标三重冗余渲染用；StatusManager 经本信号广播，
+#          UI 仅 listen、不 import StatusManager——解耦红线。）
+#   status_applied     —— 状态初次施加（type 首次出现）
+#   status_changed    —— 层数/回合变化（含 DoT tick 刷新）
+#   status_expired    —— 状态到期清除
+signal status_applied(unit_id: String, status_type: String, stacks: int, turns_left: int)
+signal status_changed(unit_id: String, status_type: String, stacks: int, turns_left: int)
+signal status_expired(unit_id: String, status_type: String)
+
+# battle:* 增补（S3-UI-Battle 选技/目标选择 UI 触发）——仅广播，不改变 step 返回契约。
+#   battle_turn_begin —— step 内确定本回合行动者后广播；UI 据 side=="player" 弹选技面板。
+signal battle_turn_begin(actor_id: String, side: String)
+
 # telemetry:* （E5-S3 埋点贯通：抽→养→战→回流 漏斗）
 # 由 TelemetryAggregator 订阅聚合，按 session 串联四类事件并输出转化率。
 # 命名遵循 category_event 契约；各信号由对应管理器在真实流中 emit（见各 Manager 源码），

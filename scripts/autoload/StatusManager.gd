@@ -101,6 +101,8 @@ func apply_status(target_id: String, spec: Dictionary, src_element: String) -> v
 	existing["turns_left"] = duration
 	existing["mag"] = mag
 	existing["elem_dot_mult"] = elem_dot_mult
+	# 层数/回合刷新广播（UI 刷新三重冗余图标；首次已在上方 status_applied 广播）
+	EventBus.status_changed.emit(target_id, type, existing["stacks"], existing["turns_left"])
 
 
 # ---------- 结算 DoT（回合开始调用）----------
@@ -120,6 +122,10 @@ func tick_statuses(unit_id: String) -> int:
 		s["turns_left"] = int(s.get("turns_left", 0)) - 1
 		if int(s.get("turns_left", 0)) > 0:
 			remaining.append(s)
+			EventBus.status_changed.emit(unit_id, s.get("type", ""), int(s.get("stacks", 0)), int(s.get("turns_left", 0)))
+		else:
+			# 到期清除：广播 status_expired（UI 移除图标）
+			EventBus.status_expired.emit(unit_id, s.get("type", ""))
 	_statuses[unit_id] = remaining
 	return total
 

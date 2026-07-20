@@ -1,5 +1,6 @@
 {
-  "_doc": "E4-S6 双端战斗视觉适配（仅数据/常量，不写 UI 场景）。五行用「图标+形状冗余」；热区最小 44px（art-bible §7/§8）。",
+  "_doc": "S3-UI-Battle 战斗 HUD 数据驱动配置（E4-S6 / D-4）。五行形状冗余用 5 个互异形状（圆/三角/方/菱/五边 ↔ 金/木/水/火/土），是 art-bible §10.1 三档形状冗余的扩展超集——形状自身即可唯一区分五行，灰阶下不依赖色（Basic E / Standard G）。所有尺寸经 ConfigLoader 读取，UI 控件不硬编码。颜色一律经 UIThemeController 的 COLOR_*/ELEMENT_COLOR（CLAUDE.md 禁硬编码色）。",
+  "_shape_redundancy_note": "映射与 scripts/utils/element_shape.gd 的 ElementShapeMap.FALLBACK 保持一致：metal=triangle / wood=circle / earth=square / water=diamond / fire=pentagon。5 个互异形状，优于 art-bible §10.1 仅 3 档（金&火共三角、木&水共圆）的基线；本表用图标+颜色对同一形状两行（如金/火）做精冗余。",
   "element_shapes": {
     "metal": "triangle",
     "wood": "circle",
@@ -8,5 +9,88 @@
     "fire": "pentagon"
   },
   "shape_redundancy": true,
-  "hotzone_min_px": 44
+  "hotzone_min_px": 44,
+  "mobile_hotzone_min_px": 48,
+  "status_icons": {
+    "burn": {
+      "label": "灼烧",
+      "element": "fire",
+      "kind": "dot",
+      "glyph": "flame",
+      "silhouette": "pointed_up_round_base",
+      "max_stacks": 3,
+      "max_turns": 3
+    },
+    "armor_break": {
+      "label": "破甲",
+      "element": "metal",
+      "kind": "debuff",
+      "glyph": "shield",
+      "silhouette": "broken_hard_edge",
+      "max_stacks": 3,
+      "max_turns": 3
+    },
+    "poison": {
+      "label": "中毒",
+      "element": "wood",
+      "kind": "dot",
+      "glyph": "drop",
+      "silhouette": "rounded_drop_bubble",
+      "max_stacks": 3,
+      "max_turns": 3
+    },
+    "momentum": {
+      "label": "气势",
+      "element": "metal",
+      "kind": "selfbuff",
+      "glyph": "chevron",
+      "silhouette": "stacked_chevron_up",
+      "max_stacks": 3,
+      "max_turns": 3
+    }
+  },
+  "combo_banner": {
+    "anchor": "top_center",
+    "anchor_id": 5,
+    "rune_ring": "five_element",
+    "tabular": true,
+    "max_width_pct": { "pc": 0.6, "mobile": 0.96 },
+    "max_height_px": { "pc": 96, "mobile": 56 },
+    "margin_top_px": { "pc": 8, "mobile": 4 },
+    "stay_ms": 1500,
+    "rise_in_ms": 400,
+    "tabular_precision": 1,
+    "double_border": true
+  },
+  "qi_gauge": {
+    "pips": 3,
+    "pip_shape_from_element": true,
+    "pip_glyph_by_element": {
+      "metal": "triangle",
+      "wood": "circle",
+      "earth": "square",
+      "water": "diamond",
+      "fire": "pentagon"
+    },
+    "tabular": true,
+    "hotzone_min_px": 44,
+    "mobile_pip_px": 48,
+    "label_format": "qi: {cur}/{max}",
+    "double_border": true
+  },
+  "skill_button": {
+    "hotzone_min_px": 44,
+    "mobile_min_px": 48,
+    "qi_cost_badge": true,
+    "disabled_style": "gray_plus_diagonal_slash_plus_number",
+    "double_border": true
+  },
+  "layout_breakpoints": {
+    "mobile": 768,
+    "hybrid": 1024
+  },
+  "dual_end_safe_area": {
+    "pc": { "min_width": 1024, "orientation": "landscape", "no_horizontal_scroll": true },
+    "mobile": { "max_width": 767, "orientation": "portrait", "bottom_bar_min_px": 44, "no_horizontal_scroll": true }
+  }
 }

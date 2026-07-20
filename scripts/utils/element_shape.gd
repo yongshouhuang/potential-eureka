@@ -28,6 +28,20 @@ static func shape_for(element: String) -> int:
 		return FALLBACK[element]
 	return Shape.CIRCLE
 
+# 取某元素的「形状名字符串」（圆/三角/方/菱/五边），供绘制几何使用。
+# 与 shape_for 的 enum 不同：绘制层要字符串（match 分支），故单列此入口。
+static func shape_name_for(element: String) -> String:
+	var cfg = ConfigLoader.load_table("battle/ui_constants", "res://data/battle/battle_ui_constants.json")
+	if cfg != null and cfg.get("element_shapes", {}).has(element):
+		return cfg["element_shapes"][element]
+	match element:
+		"metal": return "triangle"
+		"wood":  return "circle"
+		"earth": return "square"
+		"water": return "diamond"
+		"fire":  return "pentagon"
+	return "circle"
+
 
 # 形状冗余是否启用（数据驱动开关）
 static func shape_redundancy_enabled() -> bool:

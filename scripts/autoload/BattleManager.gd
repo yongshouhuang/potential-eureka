@@ -192,6 +192,8 @@ func step(action: Dictionary = {}) -> Dictionary:
 		return { "done": true, "outcome": _outcome }
 
 	var actor_id: String = actor.get("id", "")
+	# S3-UI-Battle：广播本回合行动者（UI 据 side 弹选技面板）；不改 step 返回契约。
+	EventBus.battle_turn_begin.emit(actor_id, actor.get("side", ""))
 
 	# 回合开始：结算该单位身上 DoT（正交红线——DoT 绝不乘 _bond_bonus / armor_break / momentum）
 	var dot: int = StatusManager.tick_statuses(actor_id)
@@ -430,6 +432,37 @@ func is_resolved() -> bool:
 func get_bond_bonus() -> float:
 	return _bond_bonus
 
+
+# ---------- 查询（S3-UI-Battle HUD 用；仅经全局名被 UI 调用，无新跨 import）----------
+# 某单位的主动技列表（基础技 + 觉醒技，已过滤 passive 串；UI 据觉醒技判断气门控）。
+func get_active_skills(unit_id: String) -> Array:
+	var actor: Dictionary = _find_actor(unit_id)
+	if actor == {}:
+		return []
+	return _active_skills(actor)
+
+# 单位轻量快照（HUD 渲染 HP 条 / 气槽 / 状态图标用）。
+func get_unit_snapshot(unit_id: String) -> Dictionary:
+	var a: Dictionary = _find_actor(unit_id)
+	if a == {}:
+		return {}
+	return {
+		"id": a.get("id", ""),
+		"side": a.get("side", ""),
+		"element": a.get("element", ""),
+		"hp": int(a.get("hp", 0)),
+		"max_hp": int(a.get("max_hp", 0)),
+		"qi": int(a.get("qi", 0)),
+		"qi_max": int(a.get("qi_max", 3)),
+		"statuses": StatusManager.get_statuses(unit_id),
+	}
+
+# 全部单位快照（HUD 开局建卡 + 目标选择列表）。
+func get_all_units() -> Array:
+	var out := []
+	for a in _actors:
+		out.append(get_unit_snapshot(a.get("id", "")))
+	return out
 
 # ---------- 工具 ----------
 func _first_alive(list: Array) -> Dictionary:
