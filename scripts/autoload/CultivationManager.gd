@@ -55,6 +55,8 @@ func upgrade(id: String) -> bool:
 		return false  # 余额不足拦截
 	e["level"] = lvl + 1
 	EventBus.cultivate_level_up.emit(id, e["level"])
+	# E5-S3 遥测：养成升级 -> 漏斗「养」阶段（代表事件）
+	EventBus.telemetry_cultivate_leveled.emit(id, e["level"])
 	return true
 
 

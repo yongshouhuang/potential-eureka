@@ -56,6 +56,8 @@ func pull(pool_id: String, count: int = 1) -> Array:
 			"fragments": 0,
 		})
 		EventBus.gacha_shikigami_obtained.emit(r["shikigami_id"], r["rarity"])
+		# E5-S3 遥测：抽到式神 -> 漏斗「抽」阶段
+		EventBus.telemetry_gacha_pulled.emit(r["shikigami_id"], r["rarity"])
 		results.append(r)
 	return results
 

@@ -65,6 +65,19 @@ signal accessibility_changed(snapshot: Dictionary)
 #        调用 BondManager.compute_combo(GameState.deck) 发射；BattleManager 仅订阅不发射（E4-S3 AC2）。）
 signal bond_combo(group_id: String, bonus_pct: float)
 
+# telemetry:* （E5-S3 埋点贯通：抽→养→战→回流 漏斗）
+# 由 TelemetryAggregator 订阅聚合，按 session 串联四类事件并输出转化率。
+# 命名遵循 category_event 契约；各信号由对应管理器在真实流中 emit（见各 Manager 源码），
+# 不在此处编写任何逻辑。解耦：聚合器仅经本信号订阅，零跨管理器 import。
+#   gacha_pulled        —— GachaManager.pull 抽到式神时 emit
+#   cultivate_leveled   —— CultivationManager.upgrade 养成升级时 emit（养阶段代表事件）
+#   battle_resolved     —— BattleManager 战斗结算（胜/负）时 emit
+#   player_reengaged    —— BattleManager 战后回流资源（胜利 grant）时 emit（回流/再 engagement）
+signal telemetry_gacha_pulled(shikigami_id: String, rarity: String)
+signal telemetry_cultivate_leveled(shikigami_id: String, new_level: int)
+signal telemetry_battle_resolved(chapter: int, stage: int, outcome: String)
+signal telemetry_player_reengaged(source: String)
+
 
 # 便捷：字符串键 -> 枚举
 static func currency_to_enum(key: String) -> int:

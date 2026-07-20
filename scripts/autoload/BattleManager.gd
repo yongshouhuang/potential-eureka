@@ -366,6 +366,8 @@ func _resolve_outcome() -> void:
 func _victory() -> void:
 	_resolved = true
 	_outcome = "victory"
+	# E5-S3 遥测：战斗结算（胜）-> 漏斗「战」阶段（先于回流事件，保证漏斗顺序）
+	EventBus.telemetry_battle_resolved.emit(_chapter, _stage, _outcome)
 	_advance_progression()
 	_grant_rewards()
 	EventBus.battle_victory.emit(_chapter, _stage)
@@ -374,6 +376,8 @@ func _victory() -> void:
 func _defeat() -> void:
 	_resolved = true
 	_outcome = "defeat"
+	# E5-S3 遥测：战斗结算（负）-> 漏斗「战」阶段（无资源回流，player_reengaged 不增）
+	EventBus.telemetry_battle_resolved.emit(_chapter, _stage, _outcome)
 	EventBus.battle_defeat.emit(_chapter, _stage)
 
 
@@ -406,6 +410,8 @@ func _grant_rewards() -> void:
 		if EconomyManager.grant("jue_xing_shi", jue, "Boss"):
 			gained["jue_xing_shi"] = jue
 	EventBus.battle_reward_dropped.emit(gained)
+	# E5-S3 遥测：战后资源回流（符箓/丹/石）-> 漏斗「回流 / 再 engagement」阶段
+	EventBus.telemetry_player_reengaged.emit("battle")
 
 
 # ---------- 查询 ----------
