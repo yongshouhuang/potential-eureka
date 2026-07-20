@@ -19,7 +19,6 @@
       "rarity_rates": { "SSR": 0.02, "SR": 0.10, "R": 0.35, "N": 0.53 },
       "soft_pity": 50,
       "hard_pity": 90,
-      "half_price_pulls": 20,
       "starter_sr_id": "sr_starter_xin",
       "shikigami_by_rarity": {
         "SSR": ["ssr_qing_long", "ssr_bai_hu"],

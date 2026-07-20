@@ -1,6 +1,6 @@
 {
   "currencies": {
-    "fu_lu":        { "daily_soft_cap": 12, "min_daily": 10, "can_accumulate": true },
+    "fu_lu":        { "daily_soft_cap": 12 },
     "ling_yu":      { "hard": true },
     "ling_qi":      { "daily_cap": 2000 },
     "po_dan":       { "weekly_cap": 5 },

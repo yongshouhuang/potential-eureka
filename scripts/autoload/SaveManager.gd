@@ -73,20 +73,27 @@ func write_to_file(path: String = SAVE_PATH) -> bool:
 	return true
 
 
-# 读文件：checksum 不符 -> 拒绝并回滚到 cache 副本
+# 读文件：checksum 不符 -> 拒绝并回滚（先内存 cache，再磁盘 CACHE_PATH 副本）。
+# 冷启动（内存 _cache 为空）也能从磁盘 cache 回滚，避免正式档损坏直接失败。
 func read_from_file(path: String = SAVE_PATH) -> bool:
 	var save := _read_dict(path)
 	if save == null:
 		return false
-	if not apply_save_dict(save):
-		# 正式档损坏 -> 尝试 cache 回滚
-		if _cache.size() > 0 and apply_save_dict(_cache):
-			save_loaded.emit()
-			return true
-		return false
-	_cache = save.duplicate(true)
-	save_loaded.emit()
-	return true
+	if apply_save_dict(save):
+		_cache = save.duplicate(true)
+		save_loaded.emit()
+		return true
+	# 正式档损坏 -> 内存快速路径回滚（warm）
+	if _cache.size() > 0 and apply_save_dict(_cache):
+		save_loaded.emit()
+		return true
+	# 冷启动 / 内存 cache 为空 -> 重新从磁盘 CACHE_PATH 读取回滚
+	var disk_cache := _read_dict(CACHE_PATH)
+	if disk_cache.size() > 0 and apply_save_dict(disk_cache):
+		_cache = disk_cache.duplicate(true)
+		save_loaded.emit()
+		return true
+	return false
 
 
 # 序列化后字节长度（用于 delta < 50KB 校验，架构 §1.9 / T3）
