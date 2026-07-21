@@ -64,7 +64,7 @@
 | 硬保底必出 SSR | 第 90 抽必出 | `next >= hard → "SSR"` | `GachaManager.gd:103-104` | ✓ |
 | 不跨池（按 pool_id 独立） | `pity[pool_id]` 独立计数 | `GameState.pity[pool_id]=int`；换池不继承 | `GameState.gd:14`；`GachaManager.gd:34-35, 84-87` | ✓ |
 | 新手前 20 抽半价 | 20 抽共 10 符箓（半价） | `_pull_cost` 前 20 抽交替(0/1)→合计 10 | `gacha_pools.json:22`；`GachaManager.gd:174-183` | ✓ |
-| 必出指定 SR | `starter_sr_id` 首抽强返 | 首次 newbie 强返 SR=`sr_starter_xin` | `gacha_pools.json:23`；`GachaManager.gd:71-78` | ✓ |
+| 必出指定 SR | `starter_sr_id` 首抽强返 | 首次 newbie 强返 SR=`sr_zhu_que` | `gacha_pools.json:22`；`GachaManager.gd:71-78` | ✓ |
 
 ### ⚠️ CONCERNS-1：soft-pity 第 50 抽边界 off-by-one
 - **设计/AC 要求**：E2-S2 AC1（`mvp-epics-stories.md:61`）——“第 50 抽 SSR 概率升至 ≥50%（软保底）”。
