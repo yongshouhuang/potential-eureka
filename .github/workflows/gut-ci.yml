@@ -110,8 +110,8 @@ jobs:
         #                 NON-ZERO exit code when any test fails
         #                 (cli/gut_cli.gd: get_tree().quit(1) on failure paths).
         #                 This is what turns the GitHub check RED.
-        #   -gdir=res://tests   Run every script discovered under res://tests
-        #                 (currently 14 test_*.gd files).
+#   -gdir=res://tests   Run every script discovered under res://tests
+#                 (currently 21 test_*.gd files).
         #   -gprefix/-gsuffix   Default test discovery (test_*.gd). We do NOT use
         #                 "-ginclude=*.gd" — that flag does NOT exist in GUT 9.x
         #                 and would be treated as an unknown argument, forcing
