@@ -25,6 +25,10 @@ mono_crash.*.json
 Thumbs.db
 *.swp
 
+# --- Local preview copies (duplicates of art/references/, for human viewing only) ---
+# 见 art/preview-s3/：由脚本复制 25 张 S3 出图供肉眼验收，非源资产、不入库。
+art/preview-s3/
+
 # ============================================================
 # NOTE: GUT (addons/gut) is intentionally NOT ignored.
 # Per CLAUDE.md it is "由用户安装" (installed locally by the dev) and is
