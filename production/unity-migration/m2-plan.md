@@ -9,11 +9,12 @@
 ## 0. 执行摘要
 
 - **M2 目标**：把 15 个 autoload manager + 3 core + 2 utils 从 GDScript 端口为 C#，headless 可测，强守 **ADR-3 解耦红线**。
-- **本草案交付**：
-  1. 本文档（M2 范围 + 系统优先级 + 第一切片设计 + 验收标准映射 M2 质量门）。
-  2. 第一垂直切片 **Gacha（B2）** 的代码骨架：`src/unity/Features/Shared/`（跨特性共享契约/基础设施）+ `src/unity/Features/Gacha/`（抽卡引擎 + 编排）+ `src/unity/Features/Gacha.Tests/`（T4/E2-S1 映射骨架）。
-  3. 每个切片目录附 `README.md` 说明如何接入 Unity 工程。
-- **关键结论**：建议 **Gacha 作为 M2 第一个垂直切片**（数据已驱动、逻辑自包含、低风险且最完整锻炼解耦红线），**Economy 紧随其后**补齐被 stub 的经济服务。
+  - **本草案交付**：
+  1. 本文档（M2 范围 + 系统优先级 + 切片设计 + 验收标准映射 M2 质量门）。
+  2. 第一垂直切片 **Gacha（B2）** 的代码骨架：`src/unity/Features/Shared/` + `src/unity/Features/Gacha/` + `src/unity/Features/Gacha.Tests/`；**本机团结引擎 EditMode Test Runner 已 7/7 全绿**（T4 保底 / E2-S1 概率 / 不跨池 / 新手 / 红线反射自检）。
+  3. 第二垂直切片 **Economy（B1）** 的代码骨架（本文件 §7，Gacha 验证通过后启动）：`src/unity/Features/Economy/`（EconomyManager + 预算纯逻辑 + 配置模型）+ `src/unity/Features/Economy.Tests/`（EditMode NUnit，含与 Gacha 的**真实扣费闭环**测试）。
+  4. 每个切片目录附 `README.md` 说明如何接入 Unity 工程（Gacha 已完成）。
+- **关键结论**：**Gacha 作为 M2 第一垂直切片已验证通过**（7/7 全绿），**Economy 作为第二切片紧跟补完被 stub 的经济服务**；二者均强守 ADR-3 红线（manager 零跨引用、跨系统只走 ServiceRegistry/EventBus/GameState、随机经 RngWrapper、PlayerProfile.Currencies 单一真源）。
 
 ---
 
@@ -43,7 +44,7 @@
 | 优先级 | 系统 | 依赖 | 数据驱动 | 自包含度 | 风险 | 建议时机 | 理由 |
 |---|---|---|---|---|---|---|---|
 | **P1 ★切片** | **Gacha (B2)** | Economy（经 `IEconomyService` 接口，非具体类） | 高（gacha_pools.json 已建模） | 中（roll 引擎纯 / pull 编排） | 中 | **第一切片** | 数据驱动完整、逻辑自包含；最完整锻炼红线（EventBus 广播 + ServiceRegistry 接口解析 + RngWrapper + PlayerProfile 写入 + 跨系统消耗）；玩家可见特性；T4 定义清晰。符合主理人提示「抽卡适合做第一个垂直切片」。 |
-| **P2** | **Economy (B1)** | 零依赖 | 高（economy_config.json） | 高 | 低 | 紧跟 Gacha | 零依赖基础件；Gacha 切片先用 `IEconomyService` stub，Economy 落地后替换为真实现（T1）。数据驱动、自包含、低风险，是补完切片的最佳下一刀。 |
+| **P2** | **Economy (B1)** | 零依赖 | 高（economy_config.json） | 高 | 低 | **进行中（草案已出，见 §7）** | 零依赖基础件；Gacha 切片先用 `IEconomyService` stub，Economy 落地后替换为真实现（T1）。数据驱动、自包含、低风险，是补完切片的最佳下一刀。**Gacha 验证通过后已产出 `EconomyManager` 代码骨架 + 闭环测试（§7），未碰 M1 Core。** |
 | **P3** | **Bond (A1)** | 零状态写 | 高（bond_combos.json） | 极高（纯函数） | 极低 | 早期热身 | `compute_combo(deck)` 纯计算 + 发 `bond:combo`；零存档写入。证明「事件-only」跨 manager 契约（BattleManager 仅订阅），极佳信心件。 |
 | **P4** | **DeckBuilder (B4 部分)** | 仅 PlayerProfile | 高 | 极高 | 极低 | 热身 | 编队 4 式神+1 法宝的增删/规模校验，纯校验逻辑，几乎无风险。 |
 | **P5** | **Cultivation (B3)** | Economy + 式神 def | 高 | 中 | 中 | Bond 后 | 升级/突破/觉醒，区间取中点确定性；T7 养成最终式神。 |
@@ -130,6 +131,85 @@ src/unity/Features/
 
 ---
 
+## 7. 第二垂直切片：Economy (B1)
+
+> 启动条件：Gacha（第一切片）已本机 7/7 全绿，解耦模式验证可行 → 启动第二切片补完被 stub 的 `IEconomyService`。
+> 性质：**规划 + 代码骨架草案**；**未改动任何 M1 Core / 已验证 Gacha 资产，未删任何 `scripts/*.gd`**。
+
+### 7.1 设计目标与红线自检
+- ✅ 货币余额单一真源 = `PlayerProfile.Currencies`（与 Gacha 一致，ADR-3 红线 #2）。`EconomyManager` 只读写它，不另持余额副本。
+- ✅ 跨系统消耗：Gacha 经 `ServiceRegistry.Resolve<IEconomyService>()` 在调用点取用，**不缓存为字段**（已验证链路；Gacha 切片零改动）。Economy 侧**反向零引用** GachaManager/IGachaService。
+- ✅ 货币变化经 `EventBus` 广播：`economy:currency_changed`（含正负金额）+ `economy:reward_granted`（带 sink）；UI/遥测仅订阅，零跨 manager import（红线 #2）。
+- ✅ 预算逻辑抽离为纯类 `ProductionBudget`（与 `GachaRollEngine` 同构，零依赖、AOT 安全），`EconomyManager` 只做编排 + 广播。
+- ✅ 持有的引用仅为基础设施/数据：`EventBus / PlayerProfile / EconomyConfig / ProductionBudget`——均非其他 manager。
+- ✅ 经济无随机路径，红线 #6 不适用（与 Godot 一致）。
+- ✅ 引擎无关（零 `UnityEngine`），可 `dotnet test` + EditMode 双跑。
+
+### 7.2 模块分解与 asmdef
+```
+src/unity/Features/
+├── Shared/                        # 已落地（RngWrapper / 服务接口 / PlayerProfile / Events）
+└── Economy/                       # asmdef: XiaXia.Features.Economy  (refs: Core, XiaXia.Features.Shared)
+    ├── Features.Economy.asmdef
+    ├── EconomyConfig.cs           # 货币定义模型 + Newtonsoft 加载（不改 M1 Core）
+    ├── ProductionBudget.cs        # 纯预算逻辑（日/周上限/周期键/重置）
+    ├── EconomyManager.cs          # 编排（实现 IEconomyService，守红线）
+    └── Tests/                     # asmdef: XiaXia.Features.Economy.Tests (EditMode)
+        ├── Features.Economy.Tests.asmdef
+        └── EconomyTests.cs        # E1-S1..S6 + 闭环节 + 红线反射自检
+```
+> **asmdef 命名/引用对齐 Gacha**：`XiaXia.Features.Economy` refs `[XiaXia.Core, XiaXia.Features.Shared]`；`XiaXia.Features.Economy.Tests` refs
+> `[XiaXia.Core, XiaXia.Features.Shared, XiaXia.Features.Economy, XiaXia.Features.Gacha]`，`includePlatforms:["Editor"]` +
+> `overrideReferences:true` + `precompiledReferences:["nunit.framework.dll"]`（与 Gacha.Tests 完全一致）。
+> ⚠️ **Tests 引用了 `XiaXia.Features.Gacha`**：为做「真 EconomyManager × GachaManager」端到端闭环测试（见 §7.5），测试程序集需引用 Gacha。
+> 这是**测试期依赖**（Tests asmdef 为叶节点，不会被其它 asmdef 反向引用），不引入 Economy↔Gacha 的生产期编译耦合，符合红线。
+
+### 7.3 关键类与方法签名
+- `EconomyManager : IEconomyService`（编排）：
+  - `bool Spend(string currency, int amount, string sink)` — 校验余额，不足返回 false 且不扣减。
+  - `int Grant(string currency, int amount, string source, bool exemptFromBudget = false)` — 增加货币；受 boss_only + 日/周预算约束；返回实际增加量（被拦截返回 0）。
+  - `int ClaimFreeTenPull(string? today = null)` — 免费十连（豁免预算示范）。
+  - `IReadOnlyList<string> GetRecommendedSources(string deficitCurrency)` — E1-S6。
+  - `void ResetDailyIfNeeded(string? today)` / `void ResetWeeklyIfNeeded(int? week)` — 跨日/周重置。
+  - `void SetDateOverride(string)` / `void SetWeekOverride(int)` — 测试时间注入（对齐 Godot）。
+- `ProductionBudget`（纯逻辑）：`int ResolveCap(CurrencyDef)` / `string PeriodKey(CurrencyDef, date, week)` / `bool CanGrant(...)` / `void Record(...)` / `ResetDailyIfNeeded` / `ResetWeeklyIfNeeded`。
+- `EconomyConfig` / `CurrencyDef` / `FreeTenPullConfig` + `EconomyConfigLoader.Load(string dataRoot)` — 配置模型与加载（不改 Core）。
+
+### 7.4 验收标准（对齐 M2 质量门 SOP）
+> 映射说明：用户提示的 **T4/E2** 是 Gacha 切片标签；Economy 在 Godot 源 `EconomyManager.gd` 头部为 **B1 / E1 S1–S6**，m2-plan §2 引 **T1** 指代经济落地。本切片沿用 **E1 系列**为主标签，交叉引用 T1；若需与 Gacha 统一命名为 T4/E2，请拍板（见 §7.6）。
+
+| 来源 | 验收点 | 本切片覆盖 |
+|---|---|---|
+| **E1-S1 / T1** | 消耗成功 / 余额不足失败 | ✅ `Spend_SuccessAndInsufficient` |
+| **E1-S2 / T1** | 产出受日/周预算上限（边界值） | ✅ `Grant_DailySoftCap_Boundary` / `CumulativeReject` / `DailyCap_LingQi` / `WeeklyCap_PoDan_CrossWeekResets` |
+| **E1-S3** | 日/周周期键判定 + 跨周期从 0 计 | ✅ `ProductionBudget.PeriodKey` + `ResetDaily_RollsProductionTrackerToNewDay` |
+| **E1-S4** | boss_only 来源限制（觉醒石仅 Boss） | ✅ `Grant_BossOnly_JueXingShi` |
+| **E1-S5** | 产出/消耗遥测（漏斗「养」阶段） | ⚶ 事件已 emit（`economy:currency_changed` 金额正负），聚合由 P9 TelemetryAggregator 订阅，本切片不重复实现遥测存储 |
+| **E1-S6** | 资源缺口 → 推荐产出源 | ✅ `GetRecommendedSources_ReturnsConfigSources` |
+| **T1（闭环）** | Gacha 经 IEconomyService 真扣 EconomyManager 余额 | ✅ `ClosedLoop_GachaPullSpendsRealEconomyBalance` / `InsufficientFuLu_StopsEarly`（端到端） |
+| **ADR-3 红线** | `EconomyManager` 字段无跨 manager 引用 | ✅ `Decoupling_NoGachaManagerFieldReference`（反射自检，预演 M2 `ArchitectureGuardTests`） |
+| **headless** | EditMode / `dotnet test` 全绿 | ✅ `Features.Economy` + `Tests` 引擎无关（零 UnityEngine） |
+
+### 7.5 与 Gacha 扣费闭环如何验证（关键）
+不沿用 Gacha 切片的 `FakeEconomyService`（那是 memory stub）。本切片构造**真 `EconomyManager`**，经 `ServiceRegistry.Register<IEconomyService>(econ)` 注册后，直接 `new GachaManager(bus, loader, profile, services, rng)` 复用**同一份 `PlayerProfile`**。调用 `gacha.Pull("standard", 5)` 时，GachaManager 在 `Pull()` 内 `TryResolve<IEconomyService>()` 取到**真 EconomyManager** → `Spend("fu_lu", 1, "gacha")` → 真实改写共享 `PlayerProfile.Currencies["fu_lu"]`。断言：
+- `results.Count == 5` 且 `PlayerProfile.Currencies["fu_lu"] == 95`（100−5）；
+- 订阅 `EconomyCurrencyChangedEvent` 收到 5 次、每次 `Amount == -1`；
+- 反向用例：`fu_lu == 2` → 仅 2 抽成功、余额归零（验证 Spend 不足时 Gacha 提前 break 的链路未被破坏）。
+这证明 Gacha（已验证）与 Economy（新）之间的契约 `IEconomyService` 端到端打通，且双方**生产期零硬引用**（Gacha 不持 Economy 字段、Economy 不持 Gacha 字段），仅靠 ServiceRegistry 解耦。
+
+### 7.6 待拍板事项（Economy 专属）
+| # | 事项 | 选项 | 建议 |
+|---|---|---|---|
+| **ECO-A** | **预算越界语义**：当前「全有或全无」（整笔拒绝，对齐 Godot） | (a) 维持全有或全无；(b) 改「按余量部分发放」（如日上限 12、已 10，grant 5 → 实发 2） | **(a) 维持 Godot 语义**：行为可预测、与旧版逐数值对齐；若产品要「部分到账」再改（属行为变更，需回归测试） |
+| **ECO-B** | **hard 货币（ling_yu）是否代码层强制「仅商城来源」** | (a) 维持仅元数据、不拦截（对齐 Godot）；(b) 加 `cfg.Hard && source != "商城" → 拒绝` | **(a) 维持**：Godot 原实现亦未拦截；语义由数据 `sources` 约束，代码保持简单。若防作弊需强约束，改 (b) |
+| **ECO-C** | **预算周期粒度**：当前「按自然日 D{yyyy-MM-dd} / 自然周 W{isoWeek}」 | (a) 自然日/自然周（已落地）；(b) 滚动 24h / 滚动 7d 窗口 | **(a) 自然周期**：与 Godot `reset_daily/weekly_if_needed` 同语义，SaveManager 跨日/周调用重置即可 |
+| **ECO-D** | **新手赠送豁免范围**：当前仅 `ClaimFreeTenPull` + `exemptFromBudget=true` 显式豁免 | (a) 仅免费十连豁免；(b) 扩到「新手期全部赠送」统一豁免 | **(a) 仅免费十连**：范围最小、最安全；其它新手赠送如需豁免，调用方显式传 `exemptFromBudget:true` |
+| **ECO-E** | **EconomyConfig 加载位置**：本切片在 `EconomyConfigLoader`（Features 内，不改 Core） | (a) 维持 Features 内加载；(b) 补回 `ConfigLoader.LoadEconomyConfig`（动 M1 Core，同 DECISION-C） | **(a) 维持**：零 M1 改动；收口阶段若统一进 Core，随 DECISION-C 一并拍板 |
+
+> **M1 资产影响结论（对应 DECISION-C/D）**：本 Economy 切片**不引入任何 M1 Core 改动**。`EconomyConfig/ProductionBudget/EconomyManager` 均新增于 `Features.Economy`；`PlayerProfile`（GAP-3）继续留在 `Features.Shared`，待 M2 收口按 **DECISION-D** 决定是否提升进 `Core.GameState`；`ConfigLoader` 是否补 `LoadEconomyConfig` 按 **DECISION-C / ECO-E** 拍板，二者均**不阻塞**本切片落地。
+
+---
+
 ## 5. 待用户拍板事项（DECISION）
 
 | # | 事项 | 选项 | 建议 |
@@ -142,10 +222,14 @@ src/unity/Features/
 
 ---
 
+> 📌 **Economy（第二切片）专属拍板项见 §7.6**：ECO-A 预算越界语义 / ECO-B hard 货币强制 / ECO-C 周期粒度 / ECO-D 新手豁免范围 / ECO-E 配置加载位置。该切片**不改动 M1 Core**（结论对应 DECISION-C/D）。
+
+---
+
 ## 6. 风险与对冲
 - **R1（红线在 Unity 更易破）**：用「接口解析 + 架构测试反射自检 + 控制清单」三重守住；本切片已附 `Decoupling_NoManagerFieldReference` 预演。
-- **R6（无 dotnet/Unity 验证）**：本草案代码为手写，须在用户本机 `dotnet test`（Core+Features 引擎无关）+ Unity EditMode 跑通；M4 立 GameCI（决策5 暂挂）。
-- **GAP-1/2/3**：均以「新增于 Features.Shared + test-seam」绕开，零改动 M1 Core；收口阶段再决定提升（DECISION-C/D）。
+- **R6（无 dotnet/Unity 验证）**：本草案代码为手写，须在用户本机 `dotnet test`（Core+Features 引擎无关）+ Unity EditMode 跑通；M4 立 GameCI（决策5 暂挂）。Economy 切片同理，且 `Economy.Tests` 额外引用 `XiaXia.Features.Gacha` 验证端到端扣费闭环（测试期依赖，不引入生产期耦合）。
+- **GAP-1/2/3**：均以「新增于 Features.Shared + test-seam」绕开，零改动 M1 Core；收口阶段再决定提升（DECISION-C/D）。Economy 切片延续同一策略——`EconomyConfig/ProductionBudget/EconomyManager` 全部新增于 `Features.Economy`，**未碰 M1 Core**，对应 §7.6 的 ECO-E。
 
 ---
 

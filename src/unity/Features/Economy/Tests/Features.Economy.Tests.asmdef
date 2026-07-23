@@ -1,0 +1,14 @@
+{
+  "name": "XiaXia.Features.Economy.Tests",
+  "rootNamespace": "XiaXia.Features.Economy.Tests",
+  "references": [ "XiaXia.Core", "XiaXia.Features.Shared", "XiaXia.Features.Economy", "XiaXia.Features.Gacha" ],
+  "includePlatforms": [ "Editor" ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [ "nunit.framework.dll" ],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

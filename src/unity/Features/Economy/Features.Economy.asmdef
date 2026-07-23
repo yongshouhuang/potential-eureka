@@ -1,0 +1,14 @@
+{
+  "name": "XiaXia.Features.Economy",
+  "rootNamespace": "XiaXia.Features.Economy",
+  "references": [ "XiaXia.Core", "XiaXia.Features.Shared" ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
