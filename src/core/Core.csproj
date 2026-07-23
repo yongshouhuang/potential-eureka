@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- 发动机无关：netstandard2.1 兼容 Unity 6 -->
+    <!-- 发动机无关：netstandard2.1 兼容团结引擎 1.9.3（Unity 2022.3 LTS） -->
     <TargetFramework>netstandard2.1</TargetFramework>
     <!-- 显式 using，避免隐式导入在 Unity 下引发冲突 -->
     <ImplicitUsings>disable</ImplicitUsings>
@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- JSON 解析；Unity 侧可替换为兼容实现（见 README） -->
-    <PackageReference Include="System.Text.Json" Version="8.0.0" />
+    <!-- JSON 解析：Newtonsoft.Json（Unity 侧由 com.unity.nuget.newtonsoft-json 包提供，此处供 .NET 8 侧 dotnet test 使用） -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>

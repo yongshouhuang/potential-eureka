@@ -13,7 +13,7 @@
 
 | # | 决策（用户拍板，2026-07-22） | 映射 ADR | 对 `port-plan` / `architecture-adrs` 的影响 |
 |---|---|---|---|
-| 决策2 | **Unity 版本 = Unity 6 LTS（`6000.x`）+ 2D URP** | ADR-1 | 工程基线锁定；M0 用 Unity 6 + 2D URP 起工程。ADR-1 → Accepted。 |
+| 决策2 | **Unity 版本 = 团结引擎 1.9.3（Tuanjie 1.9.3，基于 Unity 2022.3 LTS）+ 2D URP** | ADR-1 | 工程基线锁定；M0 用团结引擎 1.9.3 + 2D URP 起工程。ADR-1 → Accepted（2026-07-23 修订：原 Unity 6 LTS 因国内网络无法获取）。 |
 | 决策5 | **托管策略 = 先留本地 + Core 程序集 `dotnet test` 推进；等 GitHub/PAT 就绪再 push；CI（GameCI）暂挂** | ADR-5 | M4 CI 推迟到 GitHub/PAT 可用；M0「立空 unity-ci.yml」改为「暂挂，待 PAT 就绪再立」。ADR-5 → Accepted 但标 ⏸ 暂挂。 |
 | 决策1 | **UI 框架 = UI Toolkit（UXML/USS）为主框架** | ADR-2 | M3 战斗 UI 走 UI Toolkit；美术交付 UXML/USS。ADR-2 → Accepted。 |
 | 决策4 | **移动端 = 仅 Android**（⚠️ 偏离 GDD「PC Steam + 移动 iOS/Android」） | ADR-1 / ADR-5 | M4 CI 仅 Android job（删 iOS macOS job）；M5 真机核验仅 Android 设备。ADR-1 去 iOS 表述。 |
@@ -26,22 +26,22 @@
 
 ## ADR-1 · Unity 版本 + 渲染管线
 
-- **Status**：**Accepted（2026-07-22 用户拍板）** —— Unity 6 LTS + 2D URP 锁定；移动端仅 Android（见本文件顶部 Locked Decisions 与 ADR-5）。
+- **Status**：**Accepted（2026-07-22 拍板，2026-07-23 修订引擎）** —— 团结引擎 1.9.3（Unity 2022.3 LTS）+ 2D URP 锁定；移动端仅 Android（见本文件顶部 Locked Decisions 与 ADR-5）。
 - **Context**：
   - 项目是 2D-first 仙侠卡牌对战（回合制、非实时物理），**布局形态保留 PC 横屏 + 移动竖屏响应式（UI Toolkit 断点）**；但**分发/构建目标仅 Android（决策4：移动端仅 Android，取消 iOS）**——GDD 原「PC Steam + 移动 iOS/Android」表述被覆盖。
   - 需要：稳定的 LTS、成熟的 2D 渲染、可挂 CVD 后处理滤镜（替代 Godot 的 Viewport shader，见 `E6-S6`）、`performance_mode` 降级、`Input System`、`Addressables` 成熟。
   - 原 Godot 用 `gl_compatibility`；Unity 侧需等价"轻量 2D 管线"。
-- **Decision**：**采用 Unity 6 LTS（`6000.x`）+ 2D URP（Universal Render Pipeline）**。
+- **Decision**：**采用 团结引擎 1.9.3（Tuanjie 1.9.3，基于 Unity 2022.3 LTS）+ 2D URP（Universal Render Pipeline）**。**（2026-07-23 修订：原定 Unity 6 LTS 因用户国内网络无法获取，改用已安装的团结引擎 1.9.3，其底层即 Unity 2022.3 LTS，架构等价。）**
   - 渲染管线锁定 **2D URP**（非 Built-in Render Pipeline，亦非 HDRP）。
   - 关闭不必要的高端特性；`performance_mode` 通过 Render Scale / 特性开关降级（继承 `E6-S6 AC4`）。
   - CVD 滤镜用 2D URP 的 **Scriptable Render Feature / Fullscreen Pass** 实现，成本远低于自定义 shader 全局后处理。
 - **Consequences**：
   - ✅ LTS 支持窗口长、2D URP 轻量（利于包体 <300MB / 帧率预算）、UI Toolkit 与 Input System 原生集成、Addressables 成熟、CVD 滤镜有现成 Render Feature 钩子。
-  - ✅ Unity 6 对 UI Toolkit / 2D / 移动构建（IL2CPP）的打磨优于 2022 LTS。
-  - ✅ 运行时授权：Unity 6 已调整 runtime fee 条款，卡牌类（低营收阈值内）通常不受影响；若上线营收超阈值需复核条款（标红，待 legal/发行确认）。
+  - ✅ 团结引擎 1.9.3 底层为 Unity 2022.3 LTS：UI Toolkit / 2D URP / 移动构建（IL2CPP）均成熟可用，足以支撑本项目（注：原评审中"Unity 6 优于 2022 LTS"的对比不再适用，因 Unity 6 在当前网络下不可得）。JSON 解析用 `Newtonsoft.Json`（Unity 包 `com.unity.nuget.newtonsoft-json`），在国内镜像可用；不依赖 `System.Text.Json`（该包在当前镜像缺）。
+  - ✅ 运行时授权：Unity（团结引擎 1.9.3 / 2022.3）已调整 runtime fee 条款，卡牌类（低营收阈值内）通常不受影响；若上线营收超阈值需复核条款（标红，待 legal/发行确认）。
   - ✗ **iOS 已取消（决策4）**：原「iOS 需 IL2CPP/AOT、macOS runner、App Store 签名」约束不再适用；仍走 **Android IL2CPP/AOT** 发布构建，故 **Core 程序集须 AOT 安全（禁反射，见 ADR-3 / R7）** 的要求不变。
   - ✗ 2D URP 需一次性管线资产配置（小成本，M0 完成）。
-- **备选**：Unity 2022 LTS（生态旧、UI Toolkit 成熟度低）；Unity 6 非 LTS（不稳定，不推荐）；HDRP（过重，违背 2D-first 与包体预算）。
+- **备选**：Unity 6 LTS（6000.x）—— **用户国内网络无法获取（Hub 列表限至 2022、安装包重定向失效），故不可选**；Unity 2022 LTS / 团结引擎 1.9.x（即所选，底层 Unity 2022.3 LTS）；Unity 6 非 LTS（不稳定，不推荐）；HDRP（过重，违背 2D-first 与包体预算）。
 
 ---
 
@@ -155,4 +155,4 @@
 
 ---
 
-【一句话总结】五条 ADR 把 S3 已验证的 Godot 架构意图用 Unity 等价机制重落地：**Unity 6 LTS + 2D URP**（ADR-1，移动端仅 Android）、**UI Toolkit 主框架守单套 UI 描述**（ADR-2）、**EventBus/GameState/ConfigLoader/服务注册表映射 Godot autoload 且用"控制清单 + 架构测试 + CI grep"三重守住解耦红线**（ADR-3，最关键）、**UTF + 引擎无关 Core 程序集取代 Python 镜像**（ADR-4）、**GameCI 替换 GUT CI 立 fail=red 门禁**（ADR-5，⏸ 暂挂待 PAT 就绪）；其中 ADR-3 红线与 ADR-5 CI 骨架是迁移成败的关键，二者均受 R6 环境阻塞影响。
+【一句话总结】五条 ADR 把 S3 已验证的 Godot 架构意图用 Unity 等价机制重落地：**团结引擎 1.9.3（Unity 2022.3 LTS）+ 2D URP**（ADR-1，移动端仅 Android；2026-07-23 由 Unity 6 LTS 修订）、**UI Toolkit 主框架守单套 UI 描述**（ADR-2）、**EventBus/GameState/ConfigLoader/服务注册表映射 Godot autoload 且用"控制清单 + 架构测试 + CI grep"三重守住解耦红线**（ADR-3，最关键）、**UTF + 引擎无关 Core 程序集取代 Python 镜像**（ADR-4）、**GameCI 替换 GUT CI 立 fail=red 门禁**（ADR-5，⏸ 暂挂待 PAT 就绪）；其中 ADR-3 红线与 ADR-5 CI 骨架是迁移成败的关键，二者均受 R6 环境阻塞影响。

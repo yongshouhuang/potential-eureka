@@ -36,3 +36,25 @@ art/preview-s3/
 # If a developer chooses to VENDOR GUT into the repo, it will be tracked
 # correctly because addons/ is not ignored above.
 # ============================================================
+
+# ============================================================
+# Unity (团结引擎 1.9.3 / Unity 2022.3) — working project
+# The Unity project under unity/ is a LOCAL WORKING COPY regenerated
+# from source (src/core/Core → Assets/Scripts/Core, data/ copy, etc.).
+# We version the SOURCE OF TRUTH in src/ and docs/, NOT the generated
+# project. This keeps the repo lean and the GitHub push small.
+# If you later want to version the Unity project, replace this single
+# line with a full Unity .gitignore (Library/, Temp/, Obj/, Logs/,
+# UserSettings/, Packages/packages-lock.json, etc.) and commit Assets/
+# + ProjectSettings/ + Packages/.
+# ============================================================
+/unity/
+
+# --- Generic Unity generated artifacts (safety net if path changes) ---
+**/[Ll]ibrary/
+**/[Tt]emp/
+**/[Oo]bj/
+**/[Ll]ogs/
+**/UserSettings/
+**/MemoryCaptures/
+

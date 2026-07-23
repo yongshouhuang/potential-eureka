@@ -1,4 +1,6 @@
-using System.Text.Json.Serialization;
+#nullable enable
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace XiaXia.Core.Models
 {
@@ -6,23 +8,23 @@ namespace XiaXia.Core.Models
     // power 取代硬编码 1.0；status_on_hit 承载觉醒改写机制，可为 null。
     public class SkillDef
     {
-        [JsonPropertyName("element")] public Element Element { get; set; }
-        [JsonPropertyName("power")] public double Power { get; set; }
-        [JsonPropertyName("status_on_hit")] public StatusOnHit? StatusOnHit { get; set; }
+        [JsonProperty("element")] public Element Element { get; set; }
+        [JsonProperty("power")] public double Power { get; set; }
+        [JsonProperty("status_on_hit")] public StatusOnHit? StatusOnHit { get; set; }
     }
 
     // 命中附加状态（觉醒技能才有，基础技能为 null）。
     public class StatusOnHit
     {
-        [JsonPropertyName("type")] public string Type { get; set; } = string.Empty;
-        [JsonPropertyName("stacks")] public int Stacks { get; set; }
-        [JsonPropertyName("duration")] public int Duration { get; set; }
+        [JsonProperty("type")] public string Type { get; set; } = string.Empty;
+        [JsonProperty("stacks")] public int Stacks { get; set; }
+        [JsonProperty("duration")] public int Duration { get; set; }
     }
 
     // 文件顶层容器： { "skills": { id: SkillDef, ... } }。
     public class SkillDefsFile
     {
-        [JsonPropertyName("skills")] public Dictionary<string, SkillDef> Skills { get; set; }
+        [JsonProperty("skills")] public Dictionary<string, SkillDef> Skills { get; set; }
             = new Dictionary<string, SkillDef>();
     }
 }

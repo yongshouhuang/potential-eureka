@@ -86,7 +86,7 @@
 | 测试 | `tests/*.gd`（21 个 GUT） | 重写为 UTF（EditMode 纯逻辑 + PlayMode 双端/场景 smoke）。T1–T7 优先测试 + S3 新增用例（status_burn / accessibility_settings / motion_scale_cvd / telemetry_loop / player_skill_select / bond_combo_after_start） | 5 |
 | 工程配置 | `project.godot` | 无 Unity 等价；重写为 Unity `ProjectSettings` + `Packages/manifest.json` + 程序集定义（`.asmdef`） | 1 |
 | CI | `.github/workflows/gut-ci.yml` | 重写为 GameCI `unity-ci.yml`（utr + GitHub Actions） | 2 |
-| 工程约定 | `CLAUDE.md` | 重写：引擎改为 Unity 6 LTS + C#；架构硬约束改写为 Unity 等价（见 `architecture-adrs.md` ADR-3） | 1 |
+| 工程约定 | `CLAUDE.md` | 重写：引擎改为 团结引擎 1.9.3（Unity 2022.3 LTS）+ C#；架构硬约束改写为 Unity 等价（见 `architecture-adrs.md` ADR-3） | 1 |
 
 > **逻辑算法可移植但须用 C# 重实现**：五行克制、保底、养成曲线、连携、状态 DoT、存档冲突等算法是引擎无关的纯逻辑，可从 `.gd` 逐函数翻译到 C#（建议放 `Core` 程序集、零 `UnityEngine` 依赖，便于 `dotnet test` 直接跑、也便于 AOT/iOS）。但**不是复制粘贴**——GDScript 与 C# 在类型系统、null、字典、信号上有差异，需重写 + 重测。
 
@@ -101,7 +101,7 @@
 | **R3** | **GUT → Unity Test Framework 迁移**：21 用例 + inject/reset + 种子 RNG 哲学需平移，headless 等价物需重建 | 中 | 高 | — | ADR-4：Core 程序集零 UnityEngine 依赖 → EditMode/dotnet 直跑；保留 inject/reset + 种子 RNG；M4 门禁 |
 | **R4** | **CI 切换（GameCI）**：GitHub Actions 跑 Unity 需 license 激活 + runner；iOS 需 macOS runner（计费） | 中 | 中 | — | ADR-5：GameCI `unity-actions`；fail=red 门禁；但**本环境跑不了**（见 R6） |
 | **R5** | **数据层零改动验证**：10 JSON 须被 Unity `ConfigLoader` 零改动消费，避免悄悄改数据格式 | 低 | 高 | — | M1 退出准则：用原 10 JSON 跑"加载→schema 校验→关键查询"全绿；不新增/不改字段 |
-| **R6** 🚩 | **最大红旗：沙箱/本环境跑不了 Unity**：无法验证 headless 构建、UTF EditMode、GameCI、perf、双端。S3 的 GUT CI（C-3）同样从未实跑 | 确定（当前） | 高 | 🚩🚩 | **迁移首务 = 立 CI 骨架 + 用户本地装 Unity 6**（类比 S3-C3 第一要务）。在所有门禁可跑前，正确性只能靠"逻辑可移植性 + Core 程序集可 `dotnet test`"托底。详见 `decisions-for-user.md` |
+| **R6** 🚩 | **最大红旗：沙箱/本环境跑不了 Unity**：无法验证 headless 构建、UTF EditMode、GameCI、perf、双端。S3 的 GUT CI（C-3）同样从未实跑 | 确定（当前） | 高 | 🚩🚩 | **迁移首务 = 立 CI 骨架 + 用户本地装 团结引擎 1.9.3（Unity 2022.3 LTS，已安装）**（类比 S3-C3 第一要务）。在所有门禁可跑前，正确性只能靠"逻辑可移植性 + Core 程序集可 `dotnet test`"托底。详见 `decisions-for-user.md` |
 | **R7** | **C# 类型/iOS IL2CPP AOT**：核心逻辑若用反射/动态特性会撞 AOT 限制 | 中 | 中 | — | Core 程序集禁用反射；RNG 用 `System.Random` 固定种子；M2 起保持 AOT 安全 |
 | **R8** | **包体 <300MB / 帧率预算**：Unity 基础运行时 + Addressables + URP/UI Toolkit | 中 | 中 | — | ADR-1 选 2D URP（轻于 HDRP）；Addressables 流式；`performance_mode` 降级（继承 E6-S6）；M5 perf 核验 |
 | **R9** | **命名冲突（InputBridge×2 / element_shape×2）** 致 Unity 编译失败或误引用 | 高 | 低 | — | M1 reconciliation，namespace 隔离（见 §2.1 注） |

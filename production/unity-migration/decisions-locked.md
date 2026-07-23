@@ -4,13 +4,15 @@
 > 日期：**2026-07-22**｜ 拍板人：主理人/用户 **游承峰**｜ 记录人：程基岩
 > 用途：把用户拍板的 4 项关键决策（及随 ADR-4 一并锁定的决策3）正式冻结，记录对 `port-plan.md` 与 `architecture-adrs.md` 的影响，并显式登记「仅 Android 偏离 GDD 双端」的偏差与沙箱限制风险。
 
+> ⚠️ **2026-07-23 修订（决策2）**：原锁定「Unity 6 LTS（6000.x）」因用户国内网络环境无法通过公开渠道获取（Hub 列表限至 2022、安装包重定向失效），经用户拍板**修订为团结引擎 1.9.3（Tuanjie 1.9.3，基于 Unity 2022.3 LTS 中国版，本地已安装）**。2D URP / UI Toolkit / Android IL2CPP 在 2022.3 上均成立，架构意图与 M0–M5 里程碑不变；仅引擎版本下调。JSON 解析改用 `Newtonsoft.Json`（Unity 包 `com.unity.nuget.newtonsoft-json`，国内镜像可用），不使用 `System.Text.Json`（该包在当前镜像缺失）。详见 `architecture-adrs.md` ADR-1 修订。
+
 ---
 
 ## 一、锁定决策总表
 
 | # | 决策 | 用户拍板内容 | 映射 ADR | 状态 |
 |---|---|---|---|---|
-| 决策2 | Unity 版本 | **Unity 6 LTS（`6000.x`）+ 2D URP** | ADR-1 | ✅ Accepted |
+| 决策2 | Unity 版本 | **团结引擎 1.9.3（Tuanjie 1.9.3，基于 Unity 2022.3 LTS）+ 2D URP** | ADR-1 | ✅ Accepted（2026-07-23 修订：原 Unity 6 LTS 因国内网络无法获取） |
 | 决策5 | 托管策略 | **先留本地 + Core 程序集 `dotnet test` 推进；等 GitHub/PAT 就绪再 push；CI（GameCI）暂挂** | ADR-5 | ✅ Accepted（⏸ CI 暂挂） |
 | 决策1 | UI 框架 | **UI Toolkit（UXML/USS）为主框架** | ADR-2 | ✅ Accepted |
 | 决策4 | 移动端 | **仅 Android**（⚠️ 偏离 GDD「PC Steam + 移动 iOS/Android」） | ADR-1 / ADR-5 | ✅ Accepted |
@@ -68,7 +70,7 @@
 - 决策5 的推进路径是「先本地 + **Core 程序集 `dotnet test`** 推进，CI 暂挂」。但**沙箱无 dotnet**，因此 `dotnet test` 这条本地托底在沙箱内**同样无法执行**。
 - 结论：在本沙箱环境中，M0–M4 的逻辑验证**既无 GameCI、也无 `dotnet test`**，仅能「文本编写 C# + 人工审阅」。这与 S3-C3「GUT 从未实跑」是**同一类风险**（质量门在工具链就绪前无法端到端验证，R6 最大红旗）。
 - **对冲（须从第一天规划，不可等到 M4 才补）**：
-  1. 用户本机装 **Unity 6 LTS + .NET SDK**，使 `dotnet test`（Core 零 `UnityEngine` 依赖）可在本机跑通，作为 M0–M4 的本地门禁；
+  1. 用户本机装 **团结引擎 1.9.3（Unity 2022.3 LTS）+ .NET SDK**，使 `dotnet test`（Core 零 `UnityEngine` 依赖）可在本机跑通，作为 M0–M4 的本地门禁；
   2. **GitHub/PAT 就绪后立即立 GameCI `unity-ci.yml` 骨架**（仅 Android，activate→test→build），让 fail=red 门禁从 day 1 生效（吸取 S3-C3 教训）；
   3. push 远端（到 `potential-eureka` 或新仓）在 PAT 就绪后进行。
 
@@ -88,4 +90,4 @@
 
 ---
 
-> **一句话**：2026-07-22 用户拍板 4 项决策（Unity 6 LTS / 托管暂挂 / UI Toolkit / 仅 Android）+ 决策3（退役 Python 镜像）一并冻结；架构已 Accepted、计划已重基线；须显式登记「仅 Android 偏离 GDD 双端」偏差，并从第一天对冲「沙箱无 dotnet 使决策5 的 `dotnet test` 托底也跑不了」这一关键风险。
+> **一句话**：2026-07-22 用户拍板 4 项决策（Unity 6 LTS / 托管暂挂 / UI Toolkit / 仅 Android）+ 决策3（退役 Python 镜像）一并冻结；**2026-07-23 因国内网络无法获取 Unity 6，决策2 修订为团结引擎 1.9.3（Unity 2022.3 LTS 中国版，已装）**，架构意图与里程碑不变。架构已 Accepted、计划已重基线；须显式登记「仅 Android 偏离 GDD 双端」偏差，并从第一天对冲「沙箱无 dotnet 使决策5 的 `dotnet test` 托底也跑不了」这一关键风险。

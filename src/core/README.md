@@ -1,8 +1,8 @@
 # 仙侠卡牌 · Core（发动机无关 C# 层 / M1）
 
-本目录是**增量化**引入的、与游戏引擎解耦的纯 C# 核心层（M1）。目标是在保留现有 Godot 工程（`scripts/*.gd`、`data/*.json`）不变的前提下，先把**数据模型 + 解耦基础设施**用可在 .NET 8 / Unity 6 编译的 C# 写出来，为后续移植与共享逻辑打底。
+本目录是**增量化**引入的、与游戏引擎解耦的纯 C# 核心层（M1）。目标是在保留现有 Godot 工程（`scripts/*.gd`、`data/*.json`）不变的前提下，先把**数据模型 + 解耦基础设施**用可在 .NET 8 / 团结引擎 1.9.3（Unity 2022.3 LTS）编译的 C# 写出来，为后续移植与共享逻辑打底。
 
-> ⚠️ **未编译验证声明**：本工作室沙箱环境**没有安装 Unity，也没有 dotnet SDK**，因此本目录下的 `.cs` 文件**未经任何编译/测试验证**。代码按 .NET 8（测试工程 `net8.0`）与 Unity 6（核心工程 `netstandard2.1`）的规范手写，预期可在您本机装好 .NET 8 SDK 后编译通过。如发现任何编译问题，请反馈修正。
+> ⚠️ **未编译验证声明**：本工作室沙箱环境**没有安装 Unity，也没有 dotnet SDK**，因此本目录下的 `.cs` 文件**未经任何编译/测试验证**。代码按 .NET 8（测试工程 `net8.0`）与团结引擎 1.9.3（Unity 2022.3 LTS，核心工程 `netstandard2.1`）的规范手写，预期可在您本机装好 .NET 8 SDK 后编译通过。如发现任何编译问题，请反馈修正。
 
 ---
 
@@ -84,12 +84,12 @@ dotnet test
 
 ---
 
-## 日后迁移到 Unity 6
+## 日后迁移到 Unity（团结引擎 1.9.3 / Unity 2022.3 LTS）
 
 1. 把 `src/core/Core/*.cs` **整目录复制**到 `Assets/Scripts/Core/`。
 2. 在该目录新建程序集定义文件 **`Core.asmdef`**，使核心层独立成 asmdef（不依赖任何具体 manager 的 asmdef）。
 3. **删除** `Core.csproj` 与 `Core.Tests/`（测试留在独立的 .NET 工程，或用 Unity Test Framework 重写）。
-4. **JSON 解析注意**：`System.Text.Json` 在 Unity 6 / IL2CPP（AOT）下可能需要源生成器或兼容包；若遇 AOT 限制，可将 `ConfigLoader` 的解析替换为 Unity 内置 `JsonUtility` 或社区方案，保持 `LoadXxx()` 签名不变即可。
+4. **JSON 解析**：核心层使用 `Newtonsoft.Json`（dll 由 Unity 包 `com.unity.nuget.newtonsoft-json` 提供；.NET 8 侧由 `Core.csproj` 的 NuGet 包提供）。该库在团结引擎 1.9.3（Unity 2022.3 LTS）/ IL2CPP（AOT）下无需源生成器即可工作，比 `System.Text.Json` 更省心。若确实遇 AOT 限制，可将 `ConfigLoader` 的解析替换为 `JsonUtility` 或社区方案，保持 `LoadXxx()` 签名不变即可。
 
 ---
 

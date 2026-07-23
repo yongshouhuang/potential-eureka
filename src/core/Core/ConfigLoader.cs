@@ -1,22 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using XiaXia.Core.Models;
 
 namespace XiaXia.Core
 {
     // 配置加载器：从可配置 base path 读取 JSON，返回强类型模型。
-    // 不依赖任何引擎 API（无 UnityEngine），可在 .NET 8 与 Unity 6（netstandard2.1）下使用。
+    // 不依赖任何引擎 API（无 UnityEngine），可在 .NET 8 与团结引擎 1.9.3（Unity 2022.3 LTS，netstandard2.1）下使用。
+    // JSON 库用 Newtonsoft.Json（Unity 侧通过 com.unity.nuget.newtonsoft-json 包提供，.NET 8 侧通过 NuGet 包提供）。
     public sealed class ConfigLoader
     {
-        // 统一反序列化选项：忽略未知字段（如各文件的 _doc）、跳过注释、容忍尾逗号。
-        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+        // 统一反序列化设置：忽略未知字段（如各文件的 _doc）；Newtonsoft 默认即容忍注释与尾逗号、属性名大小写不敏感。
+        private static readonly JsonSerializerSettings Options = new JsonSerializerSettings
         {
-            PropertyNameCaseInsensitive = true,
-            ReadCommentHandling = JsonCommentHandling.Skip,
-            AllowTrailingCommas = true,
+            MissingMemberHandling = MissingMemberHandling.Ignore,
         };
 
         private readonly string _basePath;
@@ -74,7 +72,7 @@ namespace XiaXia.Core
             if (!File.Exists(full))
                 throw new FileNotFoundException($"配置文件不存在：{full}", full);
             var json = File.ReadAllText(full);
-            return JsonSerializer.Deserialize<T>(json, Options)
+            return JsonConvert.DeserializeObject<T>(json, Options)
                    ?? throw new InvalidOperationException($"反序列化失败（结果为 null）：{full}");
         }
 

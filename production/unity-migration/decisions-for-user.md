@@ -17,15 +17,15 @@
 
 ---
 
-## 决策 2 · Unity 版本：Unity 6 LTS vs 其他
+## 决策 2 · Unity 版本：团结引擎 1.9.3（Unity 2022.3 LTS）✅ 已拍板（2026-07-23 修订）
 
-- **【推荐】Unity 6 LTS（`6000.x`）+ 2D URP**（见 ADR-1）。
+- **【已拍板】团结引擎 1.9.3（Tuanjie 1.9.3，基于 Unity 2022.3 LTS）+ 2D URP**（见 ADR-1；2026-07-23 由 Unity 6 LTS 修订，因国内网络无法获取 Unity 6）。
 - **取舍**：
-  - Unity 6 LTS：LTS 支持长、2D URP 轻、UI Toolkit/Input System/Addressables 成熟、CVD 有 Render Feature 钩子；但 iOS 须 IL2CPP/AOT（构建慢），且 runtime fee 条款需在营收超阈值时复核。
-  - Unity 2022 LTS：生态旧、UI Toolkit 成熟度低。
-  - 非 LTS（如 6 非 LTS / 6000.x Tech stream）：不稳定，不推荐用于产品。
+  - 团结引擎 1.9.3（Unity 2022.3 LTS）：用户本地已安装、2D URP 轻、UI Toolkit/Input System/Addressables 成熟、CVD 有 Render Feature 钩子；Unity 2022.3 的 UI Toolkit 成熟度虽略低于 Unity 6，但足以支撑本项目；runtime fee 条款需在营收超阈值时复核。
+  - Unity 2022 LTS / 团结引擎 1.9.x（即所选，底层 Unity 2022.3 LTS）：生态较 2022 成熟，UI Toolkit 可用。
+  - 非 LTS（如 Unity 6 非 LTS / Tech stream）：不稳定，不推荐用于产品。
 - **影响**：决定整个工程基线、包体/帧率上限、移动构建方式、后续所有 ADR 的落地前提。M0 即依赖此项。
-- **我的判断**：Unity 6 LTS 是 2D 卡牌项目当前最稳选择；runtime fee 阈值对早期卡牌项目通常无影响，上线前再复核即可。
+- **我的判断**：原定 Unity 6 LTS 因国内网络无法获取，已修订为团结引擎 1.9.3（底层 Unity 2022.3 LTS，已安装）；2D 卡牌项目在 2022.3 上完全可行，runtime fee 阈值对早期卡牌项目通常无影响，上线前再复核即可。
 
 ---
 

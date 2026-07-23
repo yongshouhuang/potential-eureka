@@ -35,7 +35,7 @@
 | Godot 工程文件 | `project.godot`（根） | 删除 | Godot 工程入口 |
 | Godot 缓存 | `.godot/`（根，已被 .gitignore） | 删除 | 引擎生成缓存 |
 | GUT CI | `.github/workflows/gut-ci.yml` | 删除 | 被 GameCI 取代（ADR-5） |
-| CLAUDE.md 的 Godot 引用 | `CLAUDE.md` | **改写**（去 Godot 表述，改 Unity 6 LTS + C# + 红线控制清单） | 引擎改 Unity（M0 详解 #6） |
+| CLAUDE.md 的 Godot 引用 | `CLAUDE.md` | **改写**（去 Godot 表述，改 团结引擎 1.9.3（Unity 2022.3 LTS） + C# + 红线控制清单） | 引擎改 Unity（M0 详解 #6） |
 | Python 逻辑镜像 | `production/qa/s3_*.py`（**6** 个：`s3_asset_data_python_check` / `s3_b1_b3_python_logic_smoke` / `s3_c4_python_cache_rollback` / `s3_e5_python_logic_mirror` / `s3_e6_python_logic_mirror` / `s3_ui_battle_python_mirror`） | 删除 | **决策3 退役 Python 镜像**，Core 程序集取代 |
 
 > 📌 注：`production/qa/` 下另有 `s1-python-logic-smoke.py` / `s2-python-logic-smoke.py` / `verify_s3_art.py` 三个 `.py` **不属于 `s3_*` 模式**，不在本次删除范围（属 S1/S2 阶段产物，是否退役另议）。
@@ -61,7 +61,7 @@
 | 引导启动 | `Bootstrapper` 场景 + `GameServices` 注册表 | 见 M0 详解 #3（ADR-3 映射） |
 
 ### ④ 决策记录指针
-- 本清单落实 `decisions-locked.md`（2026-07-22 锁定：决策2 Unity 6 LTS / 决策5 托管暂挂 / 决策1 UI Toolkit / 决策4 仅 Android / 决策3 退役 Python 镜像）。
+- 本清单落实 `decisions-locked.md`（2026-07-22 锁定，2026-07-23 修订决策2 为团结引擎 1.9.3（Unity 2022.3 LTS）：决策2 团结引擎 1.9.3 / 决策5 托管暂挂 / 决策1 UI Toolkit / 决策4 仅 Android / 决策3 退役 Python 镜像）。
 - 沙箱限制（无 dotnet / 无 Unity）见文末 **Sandbox Limitation** 章节。
 
 ---
@@ -70,14 +70,14 @@
 
 - **目标**：在 `production/unity-migration/` 之外不动旧 Godot 文件，新建 Unity 工程骨架（**决策5：先留本地，待 GitHub/PAT 就绪再决定远端**），建立程序集边界与引导启动，并**立起空 CI 骨架改为暂挂**（见 Sandbox Limitation）。
 - **关键动作**：
-  1. Unity 6 LTS 工程 + 2D URP 管线资产（ADR-1）。
+  1. 团结引擎 1.9.3（Unity 2022.3 LTS）工程 + 2D URP 管线资产（ADR-1）。
   2. 程序集定义（`.asmdef`）：`Core`（零 UnityEngine 依赖）、`Services`、`UI`、`Tests`（EditMode/PlayMode）。
   3. `Bootstrapper` 场景 + `GameServices` 注册表（ADR-3 映射）。
   4. 重命名 reconciliation：`InputBridge`×2 → 单例；`element_shape`×2 → `ElementShapeUtil`(Core) + `ElementShapeView`(UI)，namespace 隔离（评估 R9）。
   5. **`unity-ci.yml` 暂挂**（决策5：CI 因 GitHub 访问阻塞而暂挂，待 PAT 就绪再立；当前以本地 `dotnet test` 托底，见 Sandbox Limitation）。
-  6. 重写 `CLAUDE.md`：引擎改 Unity 6 LTS + C#；硬约束改写为 ADR-3 控制清单。
+  6. 重写 `CLAUDE.md`：引擎改 团结引擎 1.9.3（Unity 2022.3 LTS）+ C#；硬约束改写为 ADR-3 控制清单。
 - **退出准则（Exit Criteria）**：
-  - [ ] Unity 6 + 2D URP 工程可打开、可空场景运行。
+  - [ ] 团结引擎 1.9.3（Unity 2022.3 LTS）+ 2D URP 工程可打开、可空场景运行。
   - [ ] 4 个 `.asmdef` 编译通过，Core 零 UnityEngine 引用（架构测试可验证）。
   - [ ] `Bootstrapper` 启动后 `GameServices.Get<EventBus>()` 可取。
   - [ ] 命名冲突已消除（编译无重复类型）。
@@ -185,7 +185,7 @@
 ### 对决策5「dotnet test」策略的关键影响 ⚠️
 - 决策5 原设想「先留本地 + **Core 程序集 `dotnet test` 推进**，等 GitHub/PAT 就绪再 push；CI 暂挂」。
 - **但沙箱无 dotnet**，意味着即便决策5 已为 CI 安排了 `dotnet test` 这条本地托底路径，它**在沙箱内仍无法执行**。换言之：在本环境里，M0–M4 的「逻辑验证」既无 GameCI、也无 `dotnet test` 可用，只剩「文本编写 + 人工审阅」。
-- **对冲（须从第一天规划）**：① 用户本机安装 Unity 6 LTS + .NET SDK，使 `dotnet test`（Core 零 UnityEngine 依赖）可在本机跑通，作为 M0–M4 的本地门禁；② GitHub/PAT 就绪后**立即立 GameCI `unity-ci.yml` 骨架**（仅 Android，activate→test→build），让 fail=red 门禁从 day 1 生效（吸取 S3-C3 教训）；③ 远程备份（push 到 `potential-eureka` 或新仓）在 PAT 就绪后进行。
+- **对冲（须从第一天规划）**：① 用户本机安装 团结引擎 1.9.3（Unity 2022.3 LTS）+ .NET SDK，使 `dotnet test`（Core 零 UnityEngine 依赖）可在本机跑通，作为 M0–M4 的本地门禁；② GitHub/PAT 就绪后**立即立 GameCI `unity-ci.yml` 骨架**（仅 Android，activate→test→build），让 fail=red 门禁从 day 1 生效（吸取 S3-C3 教训）；③ 远程备份（push 到 `potential-eureka` 或新仓）在 PAT 就绪后进行。
 
 ### 沙箱能做 / 不能做
 | 能做 | 不能做 |

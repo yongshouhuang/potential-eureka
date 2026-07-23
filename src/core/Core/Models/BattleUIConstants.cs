@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace XiaXia.Core.Models
 {
@@ -7,106 +7,106 @@ namespace XiaXia.Core.Models
     public class BattleUIConstants
     {
         // 五行 -> 形状（triangle/circle/square/diamond/pentagon），键为小写元素名。
-        [JsonPropertyName("element_shapes")] public Dictionary<string, string> ElementShapes { get; set; }
+        [JsonProperty("element_shapes")] public Dictionary<string, string> ElementShapes { get; set; }
             = new Dictionary<string, string>();
-        [JsonPropertyName("shape_redundancy")] public bool ShapeRedundancy { get; set; }
-        [JsonPropertyName("hotzone_min_px")] public int HotzoneMinPx { get; set; }
-        [JsonPropertyName("mobile_hotzone_min_px")] public int MobileHotzoneMinPx { get; set; }
+        [JsonProperty("shape_redundancy")] public bool ShapeRedundancy { get; set; }
+        [JsonProperty("hotzone_min_px")] public int HotzoneMinPx { get; set; }
+        [JsonProperty("mobile_hotzone_min_px")] public int MobileHotzoneMinPx { get; set; }
         // 状态图标，键为 burn/armor_break/poison/momentum。
-        [JsonPropertyName("status_icons")] public Dictionary<string, StatusIconDef> StatusIcons { get; set; }
+        [JsonProperty("status_icons")] public Dictionary<string, StatusIconDef> StatusIcons { get; set; }
             = new Dictionary<string, StatusIconDef>();
-        [JsonPropertyName("combo_banner")] public ComboBannerDef ComboBanner { get; set; } = new ComboBannerDef();
-        [JsonPropertyName("qi_gauge")] public QiGaugeDef QiGauge { get; set; } = new QiGaugeDef();
-        [JsonPropertyName("skill_button")] public SkillButtonDef SkillButton { get; set; } = new SkillButtonDef();
-        [JsonPropertyName("layout_breakpoints")] public LayoutBreakpoints LayoutBreakpoints { get; set; } = new LayoutBreakpoints();
-        [JsonPropertyName("dual_end_safe_area")] public DualEndSafeArea DualEndSafeArea { get; set; } = new DualEndSafeArea();
+        [JsonProperty("combo_banner")] public ComboBannerDef ComboBanner { get; set; } = new ComboBannerDef();
+        [JsonProperty("qi_gauge")] public QiGaugeDef QiGauge { get; set; } = new QiGaugeDef();
+        [JsonProperty("skill_button")] public SkillButtonDef SkillButton { get; set; } = new SkillButtonDef();
+        [JsonProperty("layout_breakpoints")] public LayoutBreakpoints LayoutBreakpoints { get; set; } = new LayoutBreakpoints();
+        [JsonProperty("dual_end_safe_area")] public DualEndSafeArea DualEndSafeArea { get; set; } = new DualEndSafeArea();
     }
 
     public class StatusIconDef
     {
-        [JsonPropertyName("label")] public string Label { get; set; } = string.Empty;
-        [JsonPropertyName("element")] public Element Element { get; set; }
-        [JsonPropertyName("kind")] public string Kind { get; set; } = string.Empty;   // dot/debuff/selfbuff
-        [JsonPropertyName("glyph")] public string Glyph { get; set; } = string.Empty;
-        [JsonPropertyName("silhouette")] public string Silhouette { get; set; } = string.Empty;
-        [JsonPropertyName("max_stacks")] public int MaxStacks { get; set; }
-        [JsonPropertyName("max_turns")] public int MaxTurns { get; set; }
+        [JsonProperty("label")] public string Label { get; set; } = string.Empty;
+        [JsonProperty("element")] public Element Element { get; set; }
+        [JsonProperty("kind")] public string Kind { get; set; } = string.Empty;   // dot/debuff/selfbuff
+        [JsonProperty("glyph")] public string Glyph { get; set; } = string.Empty;
+        [JsonProperty("silhouette")] public string Silhouette { get; set; } = string.Empty;
+        [JsonProperty("max_stacks")] public int MaxStacks { get; set; }
+        [JsonProperty("max_turns")] public int MaxTurns { get; set; }
     }
 
     public class SizePct
     {
-        [JsonPropertyName("pc")] public double Pc { get; set; }
-        [JsonPropertyName("mobile")] public double Mobile { get; set; }
+        [JsonProperty("pc")] public double Pc { get; set; }
+        [JsonProperty("mobile")] public double Mobile { get; set; }
     }
 
     public class SizePx
     {
-        [JsonPropertyName("pc")] public int Pc { get; set; }
-        [JsonPropertyName("mobile")] public int Mobile { get; set; }
+        [JsonProperty("pc")] public int Pc { get; set; }
+        [JsonProperty("mobile")] public int Mobile { get; set; }
     }
 
     public class ComboBannerDef
     {
-        [JsonPropertyName("anchor")] public string Anchor { get; set; } = string.Empty;
-        [JsonPropertyName("anchor_id")] public int AnchorId { get; set; }
-        [JsonPropertyName("rune_ring")] public string RuneRing { get; set; } = string.Empty;
-        [JsonPropertyName("tabular")] public bool Tabular { get; set; }
-        [JsonPropertyName("max_width_pct")] public SizePct MaxWidthPct { get; set; } = new SizePct();
-        [JsonPropertyName("max_height_px")] public SizePx MaxHeightPx { get; set; } = new SizePx();
-        [JsonPropertyName("margin_top_px")] public SizePx MarginTopPx { get; set; } = new SizePx();
-        [JsonPropertyName("stay_ms")] public int StayMs { get; set; }
-        [JsonPropertyName("rise_in_ms")] public int RiseInMs { get; set; }
-        [JsonPropertyName("tabular_precision")] public int TabularPrecision { get; set; }
-        [JsonPropertyName("double_border")] public bool DoubleBorder { get; set; }
+        [JsonProperty("anchor")] public string Anchor { get; set; } = string.Empty;
+        [JsonProperty("anchor_id")] public int AnchorId { get; set; }
+        [JsonProperty("rune_ring")] public string RuneRing { get; set; } = string.Empty;
+        [JsonProperty("tabular")] public bool Tabular { get; set; }
+        [JsonProperty("max_width_pct")] public SizePct MaxWidthPct { get; set; } = new SizePct();
+        [JsonProperty("max_height_px")] public SizePx MaxHeightPx { get; set; } = new SizePx();
+        [JsonProperty("margin_top_px")] public SizePx MarginTopPx { get; set; } = new SizePx();
+        [JsonProperty("stay_ms")] public int StayMs { get; set; }
+        [JsonProperty("rise_in_ms")] public int RiseInMs { get; set; }
+        [JsonProperty("tabular_precision")] public int TabularPrecision { get; set; }
+        [JsonProperty("double_border")] public bool DoubleBorder { get; set; }
     }
 
     public class QiGaugeDef
     {
-        [JsonPropertyName("pips")] public int Pips { get; set; }
-        [JsonPropertyName("pip_shape_from_element")] public bool PipShapeFromElement { get; set; }
+        [JsonProperty("pips")] public int Pips { get; set; }
+        [JsonProperty("pip_shape_from_element")] public bool PipShapeFromElement { get; set; }
         // 五行 -> 形状。
-        [JsonPropertyName("pip_glyph_by_element")] public Dictionary<string, string> PipGlyphByElement { get; set; }
+        [JsonProperty("pip_glyph_by_element")] public Dictionary<string, string> PipGlyphByElement { get; set; }
             = new Dictionary<string, string>();
-        [JsonPropertyName("tabular")] public bool Tabular { get; set; }
-        [JsonPropertyName("hotzone_min_px")] public int HotzoneMinPx { get; set; }
-        [JsonPropertyName("mobile_pip_px")] public int MobilePipPx { get; set; }
-        [JsonPropertyName("label_format")] public string LabelFormat { get; set; } = string.Empty;
-        [JsonPropertyName("double_border")] public bool DoubleBorder { get; set; }
+        [JsonProperty("tabular")] public bool Tabular { get; set; }
+        [JsonProperty("hotzone_min_px")] public int HotzoneMinPx { get; set; }
+        [JsonProperty("mobile_pip_px")] public int MobilePipPx { get; set; }
+        [JsonProperty("label_format")] public string LabelFormat { get; set; } = string.Empty;
+        [JsonProperty("double_border")] public bool DoubleBorder { get; set; }
     }
 
     public class SkillButtonDef
     {
-        [JsonPropertyName("hotzone_min_px")] public int HotzoneMinPx { get; set; }
-        [JsonPropertyName("mobile_min_px")] public int MobileMinPx { get; set; }
-        [JsonPropertyName("qi_cost_badge")] public bool QiCostBadge { get; set; }
-        [JsonPropertyName("disabled_style")] public string DisabledStyle { get; set; } = string.Empty;
-        [JsonPropertyName("double_border")] public bool DoubleBorder { get; set; }
+        [JsonProperty("hotzone_min_px")] public int HotzoneMinPx { get; set; }
+        [JsonProperty("mobile_min_px")] public int MobileMinPx { get; set; }
+        [JsonProperty("qi_cost_badge")] public bool QiCostBadge { get; set; }
+        [JsonProperty("disabled_style")] public string DisabledStyle { get; set; } = string.Empty;
+        [JsonProperty("double_border")] public bool DoubleBorder { get; set; }
     }
 
     public class LayoutBreakpoints
     {
-        [JsonPropertyName("mobile")] public int Mobile { get; set; }
-        [JsonPropertyName("hybrid")] public int Hybrid { get; set; }
+        [JsonProperty("mobile")] public int Mobile { get; set; }
+        [JsonProperty("hybrid")] public int Hybrid { get; set; }
     }
 
     public class SafeAreaPc
     {
-        [JsonPropertyName("min_width")] public int MinWidth { get; set; }
-        [JsonPropertyName("orientation")] public string Orientation { get; set; } = string.Empty;
-        [JsonPropertyName("no_horizontal_scroll")] public bool NoHorizontalScroll { get; set; }
+        [JsonProperty("min_width")] public int MinWidth { get; set; }
+        [JsonProperty("orientation")] public string Orientation { get; set; } = string.Empty;
+        [JsonProperty("no_horizontal_scroll")] public bool NoHorizontalScroll { get; set; }
     }
 
     public class SafeAreaMobile
     {
-        [JsonPropertyName("max_width")] public int MaxWidth { get; set; }
-        [JsonPropertyName("orientation")] public string Orientation { get; set; } = string.Empty;
-        [JsonPropertyName("bottom_bar_min_px")] public int BottomBarMinPx { get; set; }
-        [JsonPropertyName("no_horizontal_scroll")] public bool NoHorizontalScroll { get; set; }
+        [JsonProperty("max_width")] public int MaxWidth { get; set; }
+        [JsonProperty("orientation")] public string Orientation { get; set; } = string.Empty;
+        [JsonProperty("bottom_bar_min_px")] public int BottomBarMinPx { get; set; }
+        [JsonProperty("no_horizontal_scroll")] public bool NoHorizontalScroll { get; set; }
     }
 
     public class DualEndSafeArea
     {
-        [JsonPropertyName("pc")] public SafeAreaPc Pc { get; set; } = new SafeAreaPc();
-        [JsonPropertyName("mobile")] public SafeAreaMobile Mobile { get; set; } = new SafeAreaMobile();
+        [JsonProperty("pc")] public SafeAreaPc Pc { get; set; } = new SafeAreaPc();
+        [JsonProperty("mobile")] public SafeAreaMobile Mobile { get; set; } = new SafeAreaMobile();
     }
 }

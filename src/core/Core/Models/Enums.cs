@@ -1,9 +1,10 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace XiaXia.Core.Models
 {
     // 稀有度：与 shikigami_defs.json / gacha_pools.json 的 "N"/"R"/"SR"/"SSR" 对齐。
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum Rarity
     {
         N = 0,
@@ -12,8 +13,8 @@ namespace XiaXia.Core.Models
         SSR = 3,
     }
 
-    // 五行元素：JSON 为小写（metal/wood/earth/water/fire），JsonStringEnumConverter 读取时大小写不敏感。
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    // 五行元素：JSON 为小写（metal/wood/earth/water/fire），StringEnumConverter 读取时大小写不敏感。
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum Element
     {
         Metal = 0,
