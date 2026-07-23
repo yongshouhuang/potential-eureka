@@ -1,0 +1,14 @@
+{
+  "name": "XiaXia.Features.Bond.Tests",
+  "rootNamespace": "XiaXia.Features.Bond.Tests",
+  "references": [ "XiaXia.Core", "XiaXia.Features.Shared", "XiaXia.Features.Bond" ],
+  "includePlatforms": [ "Editor" ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [ "nunit.framework.dll" ],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

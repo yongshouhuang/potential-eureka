@@ -1,4 +1,5 @@
 #nullable enable
+using System.Collections.Generic;
 using XiaXia.Features.Shared;
 
 namespace XiaXia.Features.Economy
@@ -23,7 +24,7 @@ namespace XiaXia.Features.Economy
 
         // 周期键：含 weekly_cap => "W{week}"（如 "W30"）；否则 => "D{date}"（如 "D2026-07-20"）。
         // 必须与 PlayerProfile.ProductionTracker.Period 注释的约定完全一致（GachaManager 旧逻辑同形）。
-        public string PeriodKey(CurrencyDef cfg, string currentDate, int currentWeek)
+        public string PeriodKey(CurrencyDef? cfg, string currentDate, int currentWeek)
         {
             if (cfg != null && cfg.WeeklyCap.HasValue) return "W" + currentWeek;
             return "D" + currentDate;
@@ -55,10 +56,12 @@ namespace XiaXia.Features.Economy
         public void ResetDailyIfNeeded(PlayerProfile profile, string today)
         {
             var key = "D" + today;
-            foreach (var kv in profile.ProductionTracker)
+            var currencies = new List<string>(profile.ProductionTracker.Keys);
+            foreach (var currency in currencies)
             {
-                if (!kv.Value.Period.StartsWith("W") && kv.Value.Period != key)
-                    profile.ProductionTracker[kv.Key] = new ProductionTracker { Period = key, Amount = 0 };
+                if (!profile.ProductionTracker.TryGetValue(currency, out var t)) continue;
+                if (!t.Period.StartsWith("W") && t.Period != key)
+                    profile.ProductionTracker[currency] = new ProductionTracker { Period = key, Amount = 0 };
             }
             var ftp = profile.FreeTenPull;
             if (ftp.LastClaimDate != today) ftp.ClaimedToday = false;
@@ -69,10 +72,12 @@ namespace XiaXia.Features.Economy
         public void ResetWeeklyIfNeeded(PlayerProfile profile, int week)
         {
             var key = "W" + week;
-            foreach (var kv in profile.ProductionTracker)
+            var currencies = new List<string>(profile.ProductionTracker.Keys);
+            foreach (var currency in currencies)
             {
-                if (kv.Value.Period.StartsWith("W") && kv.Value.Period != key)
-                    profile.ProductionTracker[kv.Key] = new ProductionTracker { Period = key, Amount = 0 };
+                if (!profile.ProductionTracker.TryGetValue(currency, out var t)) continue;
+                if (t.Period.StartsWith("W") && t.Period != key)
+                    profile.ProductionTracker[currency] = new ProductionTracker { Period = key, Amount = 0 };
             }
         }
     }

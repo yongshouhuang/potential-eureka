@@ -137,6 +137,18 @@ namespace XiaXia.Features.Economy.Tests
         }
 
         [Test]
+        public void ResetWeeklyCap_ProductionTracker()
+        {
+            var econ = new EconomyManager(_bus, _profile, FakeConfig());
+            econ.SetWeekOverride(30);
+            Assert.AreEqual(5, econ.Grant("po_dan", 5, "推图"), "本周发满 5（周上限）");
+            Assert.AreEqual(0, econ.Grant("po_dan", 1, "推图"), "本周已满，拒绝");
+
+            econ.ResetWeeklyIfNeeded(31);                  // 直接调周界重置
+            Assert.AreEqual(5, econ.Grant("po_dan", 5, "推图"), "周重置后可再发满 5");
+        }
+
+        [Test]
         public void Grant_BossOnly_JueXingShi()
         {
             var econ = new EconomyManager(_bus, _profile, FakeConfig());

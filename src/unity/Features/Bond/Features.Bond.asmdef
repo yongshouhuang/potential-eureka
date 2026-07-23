@@ -1,0 +1,14 @@
+{
+  "name": "XiaXia.Features.Bond",
+  "rootNamespace": "XiaXia.Features.Bond",
+  "references": [ "XiaXia.Core", "XiaXia.Features.Shared" ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
