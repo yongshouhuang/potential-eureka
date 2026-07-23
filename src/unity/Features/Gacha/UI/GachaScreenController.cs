@@ -283,24 +283,25 @@ namespace XiaXia.Features.Gacha.UI
             {
                 var idx = cue.CardIndex;
                 var rarity = cue.Rarity;
-                _timeline.Add((cue.AppearTime, () =>
+                _timeline.Add((cue.AppearTime, new Action(() =>
                 {
                     var card = InstantiateResultCard(results[idx], rarity);
+                    if (card == null) return;
                     _revealCards.Add(card);
                     _audio?.Play(SoundId.Gacha_Card_Flip_Start);          // t=0.00 起手 whoosh
                     card.Flip?.BeginFlip(_reduceMotion);                  // 起手翻面（reduce_motion→瞬判定格）
-                }));
-                _timeline.Add((cue.RevealTime, () =>
+                })));
+                _timeline.Add((cue.RevealTime, new Action(() =>
                 {
                     _audio?.Play(SoundId.Gacha_Reveal_Swap);             // t=0.25 青碧灵光升腾 chime（基础层）
                     _audio?.Play(rarity.RevealTopLayerFor());            // t=0.25 稀有度顶层（叠于 Swap）
-                }));
+                })));
                 if (cue.IsSsr)
-                    _timeline.Add((cue.SsrClimaxTime, () =>
+                    _timeline.Add((cue.SsrClimaxTime, new Action(() =>
                     {
                         _audio?.Play(SoundId.Gacha_Reveal_SSR_Climax);   // t=0.25+0.2s 紫宸虹光峰值（audio §8.2）
                         CardAt(idx)?.PlaySsrHolo();
-                    }));
+                    })));
             }
             _timeline.Sort((a, b) => a.time.CompareTo(b.time));
             _timelineIdx = 0;

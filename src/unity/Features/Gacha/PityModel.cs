@@ -13,8 +13,8 @@ namespace XiaXia.Features.Gacha
         public sealed class View
         {
             public float FillRatio;     // 0..1
-            public string CountText;    // 例 "12 / 90"（tabular）
-            public string SubText;      // 副文（距保底 / 软保底生效 / 下抽必出 SSR）
+            public string? CountText;   // 例 "12 / 90"（tabular）
+            public string? SubText;     // 副文（距保底 / 软保底生效 / 下抽必出 SSR）
             public bool SoftActive;     // 已入软保底区间
             public bool NearHard;       // 再抽 1 即硬保底必出 SSR
         }

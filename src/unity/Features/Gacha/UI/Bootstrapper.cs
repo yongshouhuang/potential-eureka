@@ -42,7 +42,7 @@ namespace XiaXia.Features.Gacha.UI
             services.Register<ServiceRegistry>(services);
 
             // 设置单例（audio §4.1 / R4 无障碍）：纯 C#，读写 PlayerProfile.Settings。
-            services.Register<IAudioSettings>(new AudioSettings(profile));
+            services.Register<IAudioSettings>(new XiaXia.Features.Audio.AudioSettings(profile));
             services.Register<IAccessibilitySettings>(new AccessibilitySettings(profile));
 
             // 数据访问（H3）：式神目录读 data/shikigami/shikigami_defs.json。

@@ -32,8 +32,8 @@ namespace XiaXia.Features.Gacha.UI
 
             var v = PityModel.Compute(pity, soft, hard);
             if (_imgFill != null) _imgFill.fillAmount = v.FillRatio;
-            if (_txtCount != null) _txtCount.text = v.CountText;
-            if (_txtSub != null) _txtSub.text = v.SubText;
+            if (_txtCount != null) _txtCount.text = v.CountText ?? "";
+            if (_txtSub != null) _txtSub.text = v.SubText ?? "";
 
             // 形状刻度常显（CVD 冗余：形状+数字+颜色，art §4.3），不靠纯色区分两段。
             SetActive(_mark50, true);

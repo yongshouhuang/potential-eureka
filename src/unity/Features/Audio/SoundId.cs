@@ -34,7 +34,7 @@ namespace XiaXia.Features.Audio
     // 作为 SoundId 的扩展方法，避免给枚举加方法（C# 枚举无实例方法）。
     public static class SoundIdExtensions
     {
-        public static SoundId RevealTopLayerFor(Rarity r) => r switch
+        public static SoundId RevealTopLayerFor(this Rarity r) => r switch
         {
             Rarity.N => SoundId.Gacha_Reveal_N,
             Rarity.R => SoundId.Gacha_Reveal_R,

@@ -102,14 +102,18 @@ namespace XiaXia.Features.Audio
         public void StopCategory(AudioCategory cat)
         {
             // 停止该类别正在播放的一次性语音
+            // 注：_active 的 Key=AudioSource，Value=SoundId；CategoryOf 接收 SoundId。
+            var toRemove = new List<AudioSource>();
             foreach (var kv in _active)
             {
-                if (kv.Value != default && CategoryOf(kv.Key) == cat && kv.Key.isPlaying)
+                if (kv.Value != default && CategoryOf(kv.Value) == cat && kv.Key.isPlaying)
                 {
                     kv.Key.Stop();
-                    _active.Remove(kv.Key);
+                    toRemove.Add(kv.Key);
                 }
             }
+            foreach (var src in toRemove) _active.Remove(src);
+
             // 停止该类别的循环
             var toStop = new List<SoundId>();
             foreach (var kv in _loops)

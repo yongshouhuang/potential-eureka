@@ -6,7 +6,8 @@
     "XiaXia.Features.Shared",
     "XiaXia.Features.Gacha",
     "XiaXia.Features.Economy",
-    "XiaXia.Features.Audio"
+    "XiaXia.Features.Audio",
+    "Unity.TextMeshPro"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
