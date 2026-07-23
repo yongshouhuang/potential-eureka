@@ -97,6 +97,12 @@ namespace XiaXia.Features.Gacha.UI
                 _reduceMotion = acc.ReduceMotion;
                 acc.Changed += OnAccessibilityChanged;
             }
+            // 兜底首刷：OnEnable 可能在 Initialize 之前触发（_gacha 彼时为 null 已提前 return），
+            // 此处服务已就绪，强制刷新状态机 + 按钮监听，确保单/十连可点击（UX §1.3）。
+            BindPool(_ResolveDefaultPoolId());
+            RefreshCurrency();
+            if (!CanAfford(1)) SetState(GachaScreenState.InsufficientCurrency);
+            else SetState(GachaScreenState.PoolSelected);
         }
 
         // R4 收口：无障碍开关变更时动态更新视觉压制（音频不受影响，audio §4.3）。
@@ -113,6 +119,9 @@ namespace XiaXia.Features.Gacha.UI
             if (_againButton != null) _againButton.onClick.AddListener(OnAgain);
             if (_skipCatcher != null) _skipCatcher.onClick.AddListener(SkipReveal);
 
+            // 若 Initialize 尚未执行（_gacha 为 null），跳过首刷，待 Initialize 末尾兜底刷新。
+            // Unity 不保证跨物体 Awake/OnEnable 顺序，防止按钮监听在 _gacha 就绪前被永久跳过。
+            if (_gacha == null) return;
             BindPool(_ResolveDefaultPoolId());
             RefreshCurrency();
             // MVP：Idle 在 OnEnable 自动绑默认池 → PoolSelected（UX §1.3）。

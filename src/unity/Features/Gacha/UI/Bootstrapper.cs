@@ -23,10 +23,16 @@ namespace XiaXia.Features.Gacha.UI
         [Header("随机种子（0=系统播种；测试可固定复现）")]
         [SerializeField] private int _seed = 1;
 
+        [Header("测试种子：无存档时初始符箓（灰盒验证用，正式存档由新手引导发放）")]
+        [SerializeField] private int _seedFuLu = 50;
+
         private void Awake()
         {
             var bus = new EventBus();
             var profile = new PlayerProfile();
+            // MVP 灰盒验证：空档案默认无符箓，无法触发抽卡。注入测试种子（仅当存档无该货币时），
+            // 正式版本应改由新手引导/首登奖励发放，不在 Bootstrapper 硬编码。
+            if (!profile.Currencies.ContainsKey("fu_lu")) profile.Currencies["fu_lu"] = _seedFuLu;
             var gameState = new GameState(bus, profile);
             var services = new ServiceRegistry();
 
