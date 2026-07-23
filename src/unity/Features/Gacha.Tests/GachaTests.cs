@@ -109,6 +109,7 @@ namespace XiaXia.Features.Gacha.Tests
                     ["SSR"] = new List<string> { "x" }, ["SR"] = new List<string> { "x" },
                     ["R"] = new List<string> { "x" }, ["N"] = new List<string> { "x" },
                 });
+            nb.StarterSrId = "x";
             _gacha.SetPoolsForTest(new Dictionary<string, GachaPool> { ["newbie"] = nb });
             var fakeEcon = new FakeEconomyService();
             fakeEcon.Balance["fu_lu"] = 100;
