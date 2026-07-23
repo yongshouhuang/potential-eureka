@@ -1,0 +1,14 @@
+{
+  "name": "XiaXia.Features.Gacha.Tests",
+  "rootNamespace": "XiaXia.Features.Gacha.Tests",
+  "references": [ "XiaXia.Core", "XiaXia.Features.Shared", "XiaXia.Features.Gacha" ],
+  "includePlatforms": [ "Editor" ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

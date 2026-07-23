@@ -1,0 +1,14 @@
+{
+  "name": "XiaXia.Features.Shared",
+  "rootNamespace": "XiaXia.Features.Shared",
+  "references": [ "XiaXia.Core" ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
