@@ -9,6 +9,10 @@ namespace XiaXia.Features.Shared
     // 二者无编译期硬引用，架构测试可断言 0 跨 manager 字段引用。
     public interface IEconomyService
     {
+        // H4 配套（UI 货币顶栏 + 符箓不足预检）：读取当前余额（不改状态）。
+        // UI 在 OnEnable 与 economy:currency_changed 时调用以绝对刷新 CurrencyLabel（UX §3.1）。
+        int GetBalance(string currency);
+
         // 校验余额；不足返回 false 且不扣减；成功则扣减 + 广播 economy:currency_changed。
         bool Spend(string currency, int amount, string sink);
 

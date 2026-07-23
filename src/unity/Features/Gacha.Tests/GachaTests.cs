@@ -173,6 +173,11 @@ namespace XiaXia.Features.Gacha.Tests
             return true;
         }
 
+        public int GetBalance(string currency)
+        {
+            return Balance.TryGetValue(currency, out var b) ? b : 0;
+        }
+
         public int Grant(string currency, int amount, string source, bool exemptFromBudget = false)
         {
             var next = Balance.TryGetValue(currency, out var b) ? b + amount : amount;

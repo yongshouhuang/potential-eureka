@@ -1,0 +1,20 @@
+{
+  "name": "XiaXia.Features.Gacha.UI",
+  "rootNamespace": "XiaXia.Features.Gacha.UI",
+  "references": [
+    "XiaXia.Core",
+    "XiaXia.Features.Shared",
+    "XiaXia.Features.Gacha",
+    "XiaXia.Features.Economy",
+    "XiaXia.Features.Audio"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

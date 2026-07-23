@@ -20,6 +20,28 @@ namespace XiaXia.Features.Shared
 
         // 当前保底计数（不跨池）。
         int GetPity(string poolId);
+
+        // H1：保底软/硬阈值（读池配置 SoftPity/HardPity）。
+        // 进度条刻度（50/90）与「软保底生效」判断用；实现须从池配置读取，禁止 UI 写死阈值。
+        (int soft, int hard) GetPityThresholds(string poolId);
+
+        // H2：卡池列表（UI PoolTab 渲染）。displayName 回退到 id（GachaPool 模型暂无独立 name 字段）。
+        IReadOnlyList<PoolMeta> GetPoolList();
+
+        // H2：本次 Pull 的符箓消耗（覆盖新手半价：前 20 抽偶数位 0 符箓）。
+        // UI 在调用 Pull 前用其做可支付性预检（UX §3.1/§3.2），避免进入 Rolling 后才失败。
+        int GetPullCost(string poolId, int count);
+    }
+
+    // H2：卡池元数据（UI PoolTab 用）。displayName 回退到首字母大写的 id；
+    // GachaPool 数据模型暂无 name 字段，后续可在 data/gacha/gacha_pools.json 增补 "name"。
+    public sealed class PoolMeta
+    {
+        public string Id { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;          // "standard" / "newbie"
+        public string StarterSrId { get; set; } = string.Empty;   // 仅新手池
+        public string HalfPriceNote { get; set; } = string.Empty; // 新手池提示文案（如「前20抽半价·必出SR」）
     }
 
     // 单次抽卡结果（纯数据，经 EventBus 广播时用其字段）。

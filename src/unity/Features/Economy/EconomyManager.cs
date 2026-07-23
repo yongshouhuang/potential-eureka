@@ -29,6 +29,14 @@ namespace XiaXia.Features.Economy
         private string _dateOverride = string.Empty;
         private int _weekOverride = -1;
 
+        // ── H4 配套：读取余额（不改状态）──
+        // UI 用于 OnEnable 初始化 CurrencyLabel 与符箓不足预检（UX §3.1/§3.2）。
+        // 余额单一真源为 PlayerProfile.Currencies（与 Spend/Grant 一致，#2）。
+        public int GetBalance(string currency)
+        {
+            return _profile.Currencies.TryGetValue(currency, out var b) ? b : 0;
+        }
+
         public EconomyManager(EventBus bus, PlayerProfile profile, EconomyConfig config)
         {
             _bus = bus ?? throw new ArgumentNullException(nameof(bus));

@@ -53,6 +53,55 @@ namespace XiaXia.Features.Gacha
         public int GetPity(string poolId) =>
             _profile.Pity.TryGetValue(poolId, out var v) ? v : 0;
 
+        // H1：保底软/硬阈值（读池配置）。空池返回 (0,0)；UI 不得写死 50/90。
+        public (int soft, int hard) GetPityThresholds(string poolId)
+        {
+            var pool = GetPool(poolId);
+            if (pool == null) return (0, 0);
+            return (pool.SoftPity, pool.HardPity);
+        }
+
+        // H2：卡池列表（UI PoolTab 渲染）。displayName 回退到首字母大写的 id。
+        public IReadOnlyList<PoolMeta> GetPoolList()
+        {
+            var dict = _injectedPools ?? _loader.LoadGachaPools();
+            var list = new List<PoolMeta>(dict.Count);
+            foreach (var kv in dict)
+            {
+                var p = kv.Value;
+                list.Add(new PoolMeta
+                {
+                    Id = p.Id,
+                    DisplayName = string.IsNullOrEmpty(p.Id)
+                        ? p.Id
+                        : char.ToUpperInvariant(p.Id[0]) + p.Id.Substring(1),
+                    Type = p.Type,
+                    StarterSrId = p.StarterSrId ?? string.Empty,
+                    HalfPriceNote = p.Type == "newbie" ? "前20抽半价·必出SR" : string.Empty,
+                });
+            }
+            return list;
+        }
+
+        // H2：本次 Pull 的符箓消耗（覆盖新手半价）。
+        // 与 Pull 内部 PullCost 同义：从当前 GachaProgress.PullsDone 起模拟 count 抽的累计消耗，
+        // 不修改任何状态——UI 据其做可支付性预检（UX §3.1/§3.2）。
+        public int GetPullCost(string poolId, int count)
+        {
+            var pool = GetPool(poolId);
+            if (pool == null || count <= 0) return 0;
+            var done = _profile.GachaProgress.TryGetValue(poolId, out var e) ? e.PullsDone : 0;
+            var cost = 0;
+            for (var k = 0; k < count; k++)
+            {
+                var p = done + k; // 第 k+1 抽前的累计进度
+                if (pool.Type != "newbie") { cost += 1; continue; }
+                if (p < 20) cost += (p % 2 == 1) ? 1 : 0; // 前 20 抽：偶数位(0)免费、奇数位(1)收费
+                else cost += 1;
+            }
+            return cost;
+        }
+
         // E2-S5 概率公示数据（双端展示用；渲染是 UI 职责）。
         public IReadOnlyDictionary<string, double> GetProbabilities(string poolId)
         {

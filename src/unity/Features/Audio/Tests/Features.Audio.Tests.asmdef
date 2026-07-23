@@ -1,0 +1,14 @@
+{
+  "name": "XiaXia.Features.Audio.Tests",
+  "rootNamespace": "XiaXia.Features.Audio.Tests",
+  "references": [ "XiaXia.Core", "XiaXia.Features.Shared", "XiaXia.Features.Audio" ],
+  "includePlatforms": [ "Editor" ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [ "nunit.framework.dll" ],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
