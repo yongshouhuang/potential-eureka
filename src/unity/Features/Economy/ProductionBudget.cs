@@ -1,6 +1,6 @@
 #nullable enable
 using System.Collections.Generic;
-using XiaXia.Features.Shared;
+using XiaXia.Core.Models;
 
 namespace XiaXia.Features.Economy
 {
@@ -13,7 +13,7 @@ namespace XiaXia.Features.Economy
     {
         // 预算上限（按优先级）：daily_soft_cap > daily_cap > weekly_cap；均缺 => 无上限（返回 -1）。
         // 对齐 Godot _within_budget 的 cfg.has() 优先级链。
-        public int ResolveCap(CurrencyDef cfg)
+        public int ResolveCap(CurrencyDef? cfg)
         {
             if (cfg == null) return -1;
             if (cfg.DailySoftCap.HasValue) return cfg.DailySoftCap.Value;
@@ -33,7 +33,7 @@ namespace XiaXia.Features.Economy
         // 是否允许本次产出（不修改状态）。
         // cap<0 => 永远允许；新周期（stored.period != key）从 0 计：amount<=cap 即可；否则 used+amount<=cap。
         // 默认「全有或全无」：超出上限整笔拒绝（对齐 Godot grant 语义；是否改「按余量部分发放」见 m2-plan 待拍板）。
-        public bool CanGrant(string currency, int amount, CurrencyDef cfg, PlayerProfile profile, string periodKey)
+        public bool CanGrant(string currency, int amount, CurrencyDef? cfg, PlayerProfile profile, string periodKey)
         {
             var cap = ResolveCap(cfg);
             if (cap < 0) return true;

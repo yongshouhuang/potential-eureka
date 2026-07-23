@@ -76,6 +76,11 @@ namespace XiaXia.Core
                    ?? throw new InvalidOperationException($"反序列化失败（结果为 null）：{full}");
         }
 
+        // 通用配置入口（DECISION-C）：供 Features 侧读取任意 JSON 配置（如 economy/economy_config.json、
+        // bond/bond_config.json），统一经本加载器——复用 LoadFile 的文件存在判断 + 反序列化设置。
+        // 不引入 Features 类型依赖：调用方以类型参数 T 传入具体配置类（Core 不反向依赖 Features）。
+        public T LoadConfig<T>(string relativePath) => LoadFile<T>(relativePath);
+
         // data/shikigami/shikigami_defs.json -> id -> ShikigamiDef。
         public Dictionary<string, ShikigamiDef> LoadShikigamiDefs() =>
             LoadFile<ShikigamiDefsFile>("shikigami/shikigami_defs.json").Shikigami;

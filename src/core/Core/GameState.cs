@@ -1,5 +1,7 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
+using XiaXia.Core.Models;
 
 namespace XiaXia.Core
 {
@@ -26,9 +28,14 @@ namespace XiaXia.Core
         private int _activeUnitId;
         private readonly Dictionary<string, object> _values = new Dictionary<string, object>();
 
-        public GameState(EventBus bus)
+        public PlayerProfile Profile { get; }
+
+        // 组合持有存档容器（DECISION-D）：Profile 缺省时新建空档案；
+        // 原有回合/通用键值状态（Turn / ActiveUnitId / SetValue / TryGetValue）保持不变。
+        public GameState(EventBus bus, PlayerProfile? profile = null)
         {
             _bus = bus ?? throw new ArgumentNullException(nameof(bus));
+            Profile = profile ?? new PlayerProfile();
         }
 
         public int Turn

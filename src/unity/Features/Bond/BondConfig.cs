@@ -26,27 +26,4 @@ namespace XiaXia.Features.Bond
         // 满级等级（= 列表长度）。
         public int MaxLevel => FragmentsPerLevel.Count;
     }
-
-    // 配置加载：从数据根读取 bond/bond_config.json。Newtonsoft 已在 M1 接入（同 ConfigLoader 依赖）。
-    // 不依赖任何 manager；Bootstrapper 调用后把 BondConfig 注入 BondManager（test-seam 友好）。
-    // 与 EconomyConfigLoader 同构：文件缺失/反序列化失败抛异常。
-    public static class BondConfigLoader
-    {
-        private static readonly JsonSerializerSettings Options = new JsonSerializerSettings
-        {
-            MissingMemberHandling = MissingMemberHandling.Ignore,
-        };
-
-        // dataRoot 为 data/ 根目录（与 ConfigLoader 同约定，即 bond_config.json 位于 <dataRoot>/bond/）。
-        // 返回强类型 BondConfig；文件缺失/反序列化失败抛异常（与 EconomyConfigLoader 行为一致）。
-        public static BondConfig Load(string dataRoot)
-        {
-            var full = System.IO.Path.Combine(dataRoot, "bond", "bond_config.json");
-            if (!System.IO.File.Exists(full))
-                throw new System.IO.FileNotFoundException($"牵绊配置不存在：{full}", full);
-            var json = System.IO.File.ReadAllText(full);
-            return JsonConvert.DeserializeObject<BondConfig>(json, Options)
-                   ?? throw new System.InvalidOperationException($"牵绊配置反序列化失败（null）：{full}");
-        }
-    }
 }

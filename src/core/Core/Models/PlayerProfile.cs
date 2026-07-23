@@ -1,14 +1,14 @@
 #nullable enable
 using System.Collections.Generic;
-using XiaXia.Core.Models;
 
-namespace XiaXia.Features.Shared
+namespace XiaXia.Core.Models
 {
     // 玩家档案中央数据（存档载体 / 单一真源）— save schema v1（对齐 Godot GameState.gd §1.7）。
     //
     // 纯数据对象，**非 manager**；manager 可读写它（ADR-3 红线 #2/#3 允许持有本地数据对象）。
-    // M1 的 Core.GameState 仅为 stub（turn/activeUnit + 通用键值），本类是 M2 真正的存档 schema。
-    // 收口建议：M2 末期把本类提升进 Core.GameState（动 M1 资产，见 m2-plan DECISION-D）。
+    // M1 的 Core.GameState 仅为 stub（turn/activeUnit + 通用键值）；本类是 M2 真正的存档 schema。
+    // DECISION-D：自 XiaXia.Features.Shared 提升进 Core.Models（动 M1 资产，依赖方向不变：
+    // Features 仍可见 Core.Models.PlayerProfile，Core 不反向依赖 Features）。
     public sealed class PlayerProfile
     {
         public const int SchemaVersion = 1;

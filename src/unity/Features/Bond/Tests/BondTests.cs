@@ -4,6 +4,7 @@ using System.Reflection;
 using NUnit.Framework;
 using XiaXia.Core;
 using XiaXia.Features.Bond;
+using XiaXia.Core.Models;
 using XiaXia.Features.Shared;
 using XiaXia.Features.Shared.Events;
 

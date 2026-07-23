@@ -31,28 +31,4 @@ namespace XiaXia.Features.Economy
         [JsonProperty("free_ten_pull")] public FreeTenPullConfig FreeTenPull { get; set; } = new();
         [JsonProperty("sources")]       public Dictionary<string, List<string>> Sources { get; set; } = new();
     }
-
-    // 配置加载：从数据根读取 economy/economy_config.json。Newtonsoft 已在 M1 接入（同 ConfigLoader 依赖）。
-    // 不依赖任何 manager；Bootstrapper 调用后把 EconomyConfig 注入 EconomyManager（test-seam 友好）。
-    // 注：未改动 M1 Core.ConfigLoader（沿用 GAP 绕开思路，对应 m2-plan DECISION-C）；如用户希望统一进
-    //     ConfigLoader（加 LoadEconomyConfig），属「补 M1 收尾」，需先说明再改 Core。
-    public static class EconomyConfigLoader
-    {
-        private static readonly JsonSerializerSettings Options = new JsonSerializerSettings
-        {
-            MissingMemberHandling = MissingMemberHandling.Ignore,
-        };
-
-        // dataRoot 为 data/ 根目录（与 ConfigLoader 同约定，即 economy_config.json 位于 <dataRoot>/economy/）。
-        // 返回强类型 EconomyConfig；文件缺失/反序列化失败抛异常（与 ConfigLoader 行为一致）。
-        public static EconomyConfig Load(string dataRoot)
-        {
-            var full = System.IO.Path.Combine(dataRoot, "economy", "economy_config.json");
-            if (!System.IO.File.Exists(full))
-                throw new System.IO.FileNotFoundException($"经济配置不存在：{full}", full);
-            var json = System.IO.File.ReadAllText(full);
-            return JsonConvert.DeserializeObject<EconomyConfig>(json, Options)
-                   ?? throw new System.InvalidOperationException($"经济配置反序列化失败（null）：{full}");
-        }
-    }
 }
