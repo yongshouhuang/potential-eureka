@@ -56,6 +56,9 @@ namespace XiaXia.Features.Gacha.UI
         [Header("设置")]
         [SerializeField] private bool _reduceMotion;             // MVP 灰盒：主理人本地可经 AccessibilitySettings 注入
 
+        [Header("布局（灰盒测试用，正式美术接入请取消勾选）")]
+        [SerializeField] private bool _autoLayout = true;        // 运行时自动把关键 UI 摆到合理位置，省去手动拖拽
+
         // —— 运行时服务（经 Initialize 注入，仅接口引用）——
         private ServiceRegistry? _services;
         private EventBus? _bus;
@@ -103,10 +106,33 @@ namespace XiaXia.Features.Gacha.UI
             RefreshCurrency();
             if (!CanAfford(1)) SetState(GachaScreenState.InsufficientCurrency);
             else SetState(GachaScreenState.PoolSelected);
+            AutoLayout();
         }
 
         // R4 收口：无障碍开关变更时动态更新视觉压制（音频不受影响，audio §4.3）。
         private void OnAccessibilityChanged() => _reduceMotion = _accSettings?.ReduceMotion ?? _reduceMotion;
+
+        // 灰盒测试布局：重编译/手动拖拽不便时，Initialize 末尾自动把关键 UI 摆到合理位置。
+        // 正式美术接入请取消勾选 _autoLayout（此段仅调试辅助，不干预业务逻辑）。
+        private void AutoLayout()
+        {
+            if (!_autoLayout) return;
+            SetRect(_currencyLabel?.transform as RectTransform, 0.5f, 1f, 0f, -100f, 400f, 100f);
+            SetRect(_pityBar?.transform as RectTransform, 0.5f, 1f, 0f, -260f, 600f, 40f);
+            SetRect(_singlePull?.transform as RectTransform, 0.5f, 0f, 0f, 200f, 300f, 120f);
+            SetRect(_tenPull?.transform as RectTransform, 0.5f, 0f, 0f, 60f, 300f, 120f);
+        }
+
+        private static void SetRect(RectTransform? rt, float ax, float ay, float x, float y, float w, float h)
+        {
+            if (rt == null) return;
+            rt.anchorMin = new Vector2(ax, ay);
+            rt.anchorMax = new Vector2(ax, ay);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.anchoredPosition = new Vector2(x, y);
+            rt.sizeDelta = new Vector2(w, h);
+            if (rt.TryGetComponent<TextMeshProUGUI>(out var tmp)) tmp.color = Color.white;
+        }
 
         private void OnEnable()
         {

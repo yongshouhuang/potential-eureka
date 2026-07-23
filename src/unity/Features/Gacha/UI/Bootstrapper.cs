@@ -66,7 +66,9 @@ namespace XiaXia.Features.Gacha.UI
             _audioService?.Initialize(services);
 
             // 抽卡屏：经 ServiceRegistry 解析全部接口依赖（红线#1/#3）。
-            _gachaScreen?.Initialize(services, bus);
+            // 兜底：重编译等导致序列化引用丢失时，按类型在场景内查找，避免手动重新拖拽。
+            var screen = _gachaScreen ?? FindObjectOfType<GachaScreenController>();
+            screen?.Initialize(services, bus);
         }
     }
 }
