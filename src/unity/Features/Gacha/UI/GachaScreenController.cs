@@ -188,8 +188,13 @@ namespace XiaXia.Features.Gacha.UI
                     break;
                 case GachaScreenState.Rolling:
                 case GachaScreenState.Reveal:
+                    ShowInsufficientCta(false);
+                    break;
                 case GachaScreenState.ResultList:
                     ShowInsufficientCta(false);
+                    // 抽卡完成回到结果列表：恢复单/十连按钮可点（UX §1.3）。
+                    // 修复「只能点一次」——Rolling 锁定后若不再刷新，按钮会永久 Disabled。
+                    RefreshPullButtons();
                     break;
             }
         }
@@ -271,9 +276,10 @@ namespace XiaXia.Features.Gacha.UI
         }
 
         // 单/十连入口（UX §3.1）。先可支付性预检，不足转 InsufficientCurrency。
+        // 允许 PoolSelected / InsufficientCurrency / ResultList 触发，Rolling/Reveal 期间屏蔽。
         private void OnPull(int count)
         {
-            if (_state != GachaScreenState.PoolSelected && _state != GachaScreenState.InsufficientCurrency) return;
+            if (_state is GachaScreenState.Rolling or GachaScreenState.Reveal) return;
             if (!CanAfford(count))
             {
                 SetState(GachaScreenState.InsufficientCurrency);
