@@ -143,8 +143,9 @@ M3 灰盒六态状态机（Idle / PoolSelected / Rolling / Reveal / ResultList /
 ### 3.3 点击行为（升级·意图事件，工程依赖）
 
 - **行为（已锁方向）**：CTA 点击 **发出意图事件**（经 `EventBus`），由 `Bootstrapper` / 外部系统订阅处理；**UI 本身不直接跳转场景**（守住 ADR-3 解耦红线：UI 不 import 商城/战斗 Manager）。
-- **事件名（待拍板）**：`GachaAcquireIntentEvent`（语义含"去哪获得符箓"），或按方向命名 `OpenStoreIntentEvent`（候选 B）/ `GoBattleIntentEvent`（候选 A）。建议事件载荷含 `reason="insufficient_currency"` 供订阅方区分。
-- **当前代码缺口（工程依赖 H-C1）**：`GachaScreenController.OnInsufficientCta` **目前仅播 `Gacha_Insufficient` 音效、未 emit 任何事件**（注释为"占位跳转意图"）。本收口要求补：`_bus.Publish(new GachaAcquireIntentEvent(...))`，并由 `Bootstrapper` 或外部订阅方接 `ui_back` 回 Summon 的导航。
+- **事件名（已定）**：`GachaAcquireIntentEvent`（语义含"去哪获得符箓"）。
+- **事件载荷（已定·M3 收口落地）**：`Reason` 字段，MVP 取 `"battle"`（= 去推图产出符箓，对齐候选 A / §1.3 防断流）；若后续并行商城入口，可扩展为 `"store"` 等取值，订阅方据 `Reason` 路由。
+- **H-C1 现状（已实现·灰盒）**：`GachaScreenController.OnInsufficientCta` 现已 `_bus.Publish(new GachaAcquireIntentEvent { Reason = "battle" })`；`Bootstrapper.Awake` 订阅该事件并 `Debug.Log(...)` 灰盒占位。**真实跳转（推图屏接管）尚未接**，列为后续里程碑依赖（见 §5.1 / 评审 R1）。
 
 ### 3.4 与状态机配合（已锁）
 
@@ -161,11 +162,11 @@ M3 灰盒六态状态机（Idle / PoolSelected / Rolling / Reveal / ResultList /
 4. **reduce_motion 开启**：CTA 视觉/动效不依赖动效，仍须可点可达（Standard I 仅压动效，不压功能）。
 5. **Rolling/Reveal 期间货币变动**（理论不 occur，因 `Pull` 同步扣费）：`OnCurrencyChanged` 在非常态不触发恢复跳转，避免打断演出。
 
-### 3.6 待拍板（方向冲突，需主理人定）
+### 3.6 方向冲突（已拍板 = Battle·去推图）
 
 - **冲突源**：`gacha-screen-mvp.md §1.3` 卡点#1 原文 CTA =「**去推图产出符箓**」（指向 Battle，对齐 ux-spec §4 核心循环防断流）；本任务稿示例为「**获取符箓**」+ `OpenStoreIntent`（指向商城）。两者方向相反。
 - **推荐**：MVP 核心循环用**候选 A「去推图产出符箓」**（免费产出源引导，不逼氪、防断流，对齐 UX 支柱 R1/R4）；若商城/充值已实装，可**并行**提供「获取符箓」(OpenStore) 作为次级入口。最终影响事件名与订阅方（§3.3）。
-- **待主理人拍板后**，由 engineering 据事件名补齐 H-C1 的 emit + 订阅（§5）。
+- **已拍板（M3 收口）**：方向 = 候选 A「去推图产出符箓」（Battle），事件名 `GachaAcquireIntentEvent`、载荷 `Reason="battle"`，H-C1 已补 emit + `Bootstrapper` 订阅（灰盒日志）。若商城实装，可并行 `Reason="store"` 次级入口。
 
 ---
 
@@ -191,8 +192,8 @@ M3 灰盒六态状态机（Idle / PoolSelected / Rolling / Reveal / ResultList /
 
 | ID | 缺口 | 建议方案 | 优先级 | 影响 |
 |---|---|---|---|---|
-| **H-C1** | CTA 点击**未 emit 意图事件**（当前 `OnInsufficientCta` 仅播音效） | 新增事件 `GachaAcquireIntentEvent`（载荷 `reason="insufficient_currency"`）+ `EventBus.Publish`；`Bootstrapper`/外部订阅接导航（`ui_back` 回 Summon） | 🔴 Critical（§3.3 行为落地必需） | InsufficientCurrency CTA 跳转 |
-| **H-C2** | 事件名/目标待定（OpenStoreIntent vs GoBattleIntent，§3.6） | 主理人拍板后据方向命名 + 接对应订阅方 | 🔴 Critical（决定 H-C1 事件类型） | 事件类型 + 订阅方 |
+| **H-C1** | ~~CTA 点击未 emit 意图事件~~ **已实现（灰盒）**：`OnInsufficientCta` emit `GachaAcquireIntentEvent{Reason="battle"}`，`Bootstrapper` 订阅 `Debug.Log` 占位 | 真实导航（推图屏接管）待后续里程碑接 | ✅ 已实现（灰盒）/ 🔴 真实跳转 TBD | InsufficientCurrency CTA 跳转 |
+| **H-C2** | ~~事件名/目标待定~~ **已拍板 = Battle（去推图）**：事件名 `GachaAcquireIntentEvent`、载荷 `Reason="battle"` | 若后续并行商城入口，扩展 `Reason="store"` 由订阅方路由 | ✅ 已拍板 | 事件类型 + 订阅方 |
 
 > 既有 M2 H1–H4（保底阈值/卡池元数据/式神元数据/currency_changed）**已于 M3 补齐**，本收口直接复用，无新增 H1–H4 缺口。
 

@@ -44,7 +44,7 @@
 
 **CONCERNS（可接受，需在后续里程碑排期消化）**
 - **R1 · H-C1 真实导航未接**：`Bootstrapper` 订阅体仅为 `Debug.Log` 灰盒占位。点 CTA **不会真跳转**去推图/商城——本里程碑验收只验证"事件已发 + UI 不崩"。真实跳转（推图屏接管）列为后续工程依赖。
-- **R2 · CTA 方向已锁定 Battle**：代码实现 = `Reason="battle"`（去推图），与设计收口推荐一致；若最终改 OpenStore（H-C2），需改 `Reason`/事件名。
+- **R2 · CTA 方向已锁定 Battle 且 GDD 已对齐**：代码实现 = `Reason="battle"`（去推图）；GDD §3.3/§5.1 原建议 `insufficient_currency` 已修订为 `battle`、H-C1 已标「已实现（灰盒）」、H-C2 标「已拍板=Battle」——规格/代码不再漂移。若后续并行 OpenStore，扩展 `Reason="store"` 即可。
 - **R3 · reduce_motion 无 Inspector 开关**：`_reduceMotion` 会被 `IAccessibilitySettings.ReduceMotion` 覆盖，QA 的 S-11 需经 `PlayerProfile.Settings` 注入验证，无直接编辑器开关。
 
 **FAIL 项**：无。（无崩溃、无扣费错误、无重复扣费、H1–H4 回归未被破坏）
