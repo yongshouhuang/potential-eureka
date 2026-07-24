@@ -20,4 +20,11 @@ namespace XiaXia.Features.Shared.Events
         public Rarity Rarity { get; set; }
         public string PoolId { get; set; } = string.Empty;
     }
+
+    // gacha:acquire_intent —— 符箓不足时 UI 发出的获取意图（去推图产出符箓，防核心循环断流）。
+    // 由外部系统（导航层/推图屏）订阅接管，UI 不直接跳转场景（ADR-3 红线）。
+    public sealed class GachaAcquireIntentEvent
+    {
+        public string Reason { get; set; } = "battle"; // "battle"=去推图产出符箓
+    }
 }

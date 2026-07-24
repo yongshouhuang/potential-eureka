@@ -5,6 +5,7 @@ using XiaXia.Features.Audio;
 using XiaXia.Features.Economy;
 using XiaXia.Features.Gacha;
 using XiaXia.Features.Shared;
+using XiaXia.Features.Shared.Events;
 using UnityEngine;
 
 namespace XiaXia.Features.Gacha.UI
@@ -69,6 +70,10 @@ namespace XiaXia.Features.Gacha.UI
             // 兜底：重编译等导致序列化引用丢失时，按类型在场景内查找，避免手动重新拖拽。
             var screen = _gachaScreen ?? FindObjectOfType<GachaScreenController>();
             screen?.Initialize(services, bus);
+
+            // 灰盒占位：订阅「获取符箓」意图事件并打日志；真实导航（去推图）由外部系统接管（ADR-3）。
+            bus.Subscribe<GachaAcquireIntentEvent>(e =>
+                Debug.Log($"[Gacha] AcquireIntent received: reason={e.Reason} (gray-box stub; real nav TBD)"));
         }
     }
 }

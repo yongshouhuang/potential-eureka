@@ -416,6 +416,7 @@ namespace XiaXia.Features.Gacha.UI
         {
             // 去推图产出符箓（UX 卡点#1）。MVP：仅占位跳转意图（Battle 屏由主菜单导航层接管）。
             _audio?.Play(SoundId.Gacha_Insufficient);
+            _bus?.Publish(new GachaAcquireIntentEvent { Reason = "battle" });
         }
 
         private void ShowInsufficientCta(bool show)
