@@ -3,7 +3,7 @@
 > **M4 定位**：本文件是 **M3 音频规格**（`design/audio/gacha-audio-spec.md` v1.1 已定稿）的**终稿层**，不重议音频方向，只在已定方向 + 已定接口契约（`SoundId`/`IAudioService`/EventBus 红线）之上，产出**可交付作曲/音效师的终稿资产规格 + 混音终稿 + 集成步骤 + 验收清单**。
 > 范围：抽卡屏（单抽/十连/选池/蓄力/翻面揭示/稀有度递进/SSR 紫宸高潮/保底/符箓不足/羁绊序章钩子）全部音频需求。
 > 引擎/平台：团结引擎 1.9.3（UGUI）/ Android IL2CPP；中间件：Unity 内置 Audio + AudioMixer（MVP 不引入 FMOD，见 M3 §4.6）。
-> 编写：audio-director（阮和鸣）。　状态：**M4 终稿规格 v1.0（待主理人审批终稿资产清单）**。
+> 编写：audio-director（阮和鸣）。　状态：**M4 终稿规格 v1.0（收口终评 · 四项待决已裁定 · 17 SoundId 可审批闭环 · 质量门 PASS[集成待补] · 详见 m4-audio-closure.md）**。
 
 ---
 
@@ -187,11 +187,13 @@ Master
 - **R3（低）`Gacha_Screen_Close` 未接线**：枚举/占位/分类齐备但控制器未调用，P2；待补或降里程碑。
 - **R4（低）`Gacha_Reveal_UR` 保留槽位**：MVP 无 UR，不触发；若加 UR 音频做"超越 SSR"更高潮。
 
-### 8.2 待确认（Decision Needed）
-1. **Rolling 修正方案选型**：A（StopLoop 移至首张 `Card_Flip_Start` 后，**推荐**）或 B（loading breath 音层），二选一由 engineering-lead 落地（§6.3，接口零改）。
-2. **BGM 终稿层级**：单条 loop 验收后，是否做 A/B/C 分层 stems 微动态？还是暂保单条？
-3. **`Gacha_Screen_Close`**：M4 补调用，还是延后？
-4. **中间件**：MVP 维持 Unity AudioMixer（不上 FMOD）确认？（沿用 M3 §4.6）
+### 8.2 已裁定（主理人默认裁定采纳 · M4 收口终评）
+> 主理人已按 audio-director 规格推荐给出**默认裁定**，四项待决全部闭合；详细依据与质量门判定见 `design/audio/m4-audio-closure.md`。
+
+1. **Rolling 修正方案 = A（已裁定）**：`StopLoop(Gacha_Rolling)` 移至首张 `Gacha_Card_Flip_Start` 触发之后（reveal 序列首 action 完成才停）。**依据**：改动最小、零新增资产、与「滚动→翻面」演出直觉一致；`IAudioService` 接口零改，仅 engineering-lead 调整 `OnPull`/`RevealSequencer` 时序落地（§6.3）。B 方案（loading breath 音层）归档备选。
+2. **BGM 终稿层级 = 单条 ambient loop 先验收（已裁定）**：M4 用单条 `gacha_bgm_ambient.wav` 无缝循环验收「待机↔抽卡」切换；A/B/C 分层 stems 微动态（§1.2 文档保留）延后至后续里程碑。**依据**：MVP 务实，避免过早投入分层资产；单条即可验证切换与 ducking 框架。
+3. **`Gacha_Screen_Close` = 延后到 P2（已裁定）**：当前控制器未调用，且非抽卡核心验收项；枚举/占位/分类齐备，待 P2 补调用或并入屏管理。**依据**：不影响 M4 验收范围，避免为单条 cue 增改控制器时序。
+4. **中间件 = 维持 Unity AudioMixer（已裁定，MVP 不上 FMOD）**：沿用 M3 §4.6。**依据**：MVP 无 adaptive music 刚需；Snapshot ducking 可由 AudioMixer 实现；FMOD 仅当后期确认交互式音乐再评估。
 
 ---
 
