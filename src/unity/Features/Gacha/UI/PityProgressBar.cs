@@ -7,7 +7,7 @@ using XiaXia.Features.Gacha;
 namespace XiaXia.Features.Gacha.UI
 {
     // 保底进度条（UX §4 / art §4）。绑定 GetPity(poolId) + GetPityThresholds(poolId)，不跨池。
-    // 视觉字段按 art §7.3：imgFill / txtCount / imgMark50 / imgMark90 / matPityFill。
+    // 视觉字段按 art §7.3：_imgFill / _txtCount / _txtSub / _mark50 / _mark90（imgTrack/matPityFill 暂缓至终稿增强，见 design/art/m4-ui-art-spec.md §7.3）。
     // 填充比例与文案由 PityModel（纯逻辑）计算，本类只做绑定与呈现，不写死阈值/文案逻辑。
     [RequireComponent(typeof(RectTransform))]
     public sealed class PityProgressBar : MonoBehaviour
@@ -36,8 +36,9 @@ namespace XiaXia.Features.Gacha.UI
             if (_txtSub != null) _txtSub.text = v.SubText ?? "";
 
             // 形状刻度常显（CVD 冗余：形状+数字+颜色，art §4.3），不靠纯色区分两段。
-            SetActive(_mark50, true);
-            SetActive(_mark90, true);
+            // 灰盒阶段 art §7.3 字段 Inspector 可能留空，用 ?. 避免 UnassignedReferenceException。
+            _mark50?.SetActive(true);
+            _mark90?.SetActive(true);
         }
 
         // 进度条更新时检测阈值跨越（audio §3.3 保底提示）。
@@ -47,12 +48,6 @@ namespace XiaXia.Features.Gacha.UI
             var c = PityModel.DetectCrossing(_boundPity, newPity, _boundSoft, _boundHard);
             _boundPity = newPity;
             return c;
-        }
-
-        private static void SetActive(Object? o, bool v)
-        {
-            if (o is GameObject go) go.SetActive(v);
-            else if (o is Component c) c.gameObject.SetActive(v);
         }
     }
 }

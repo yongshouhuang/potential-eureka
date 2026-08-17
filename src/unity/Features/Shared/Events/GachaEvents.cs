@@ -27,4 +27,7 @@ namespace XiaXia.Features.Shared.Events
     {
         public string Reason { get; set; } = "battle"; // "battle"=去推图产出符箓
     }
+
+    // gacha:return_intent —— 占位推图屏"返回"按钮发出，导航层订阅后 Back() 回抽卡屏（ADR-3：UI 不直连导航）。
+    public sealed class GachaReturnIntentEvent { }
 }

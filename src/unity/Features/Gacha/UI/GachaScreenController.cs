@@ -54,7 +54,8 @@ namespace XiaXia.Features.Gacha.UI
         [SerializeField] private Button? _skipCatcher;           // 点击跳过翻面（Reveal 期）
 
         [Header("设置")]
-        [SerializeField] private bool _reduceMotion;             // MVP 灰盒：主理人本地可经 AccessibilitySettings 注入
+        [SerializeField, Tooltip("R3: 服务已注册 IAccessibilitySettings 时此值被覆盖，请经 PlayerProfile.Settings[accessibility_reduce_motion] 注入验证（见 QA S-11）")]
+        private bool _reduceMotion;             // MVP 灰盒：主理人本地可经 AccessibilitySettings 注入
 
         [Header("布局（灰盒测试用，正式美术接入请取消勾选）")]
         [SerializeField] private bool _autoLayout = true;        // 运行时自动把关键 UI 摆到合理位置，省去手动拖拽
@@ -291,7 +292,6 @@ namespace XiaXia.Features.Gacha.UI
             _audio?.PlayLoop(SoundId.Gacha_Rolling);
 
             var results = _gacha!.Pull(_poolId, count); // 同步返回有序结果（M2 实现）
-            _audio?.StopLoop(SoundId.Gacha_Rolling);
 
             // 保底：先记录跨越（用 Pull 后新值），再重绑进度条
             var newPity = _gacha.GetPity(_poolId);
@@ -330,6 +330,7 @@ namespace XiaXia.Features.Gacha.UI
                     if (card == null) return;
                     _revealCards.Add(card);
                     _audio?.Play(SoundId.Gacha_Card_Flip_Start);          // t=0.00 起手 whoosh
+                    _audio?.StopLoop(SoundId.Gacha_Rolling);
                     card.Flip?.BeginFlip(_reduceMotion);                  // 起手翻面（reduce_motion→瞬判定格）
                 })));
                 _timeline.Add((cue.RevealTime, new Action(() =>
@@ -361,6 +362,7 @@ namespace XiaXia.Features.Gacha.UI
 
             // 收尾：确保全部定格（含未跑完的跳过情况）
             foreach (var c in _revealCards) c.Flip?.ForceFront();
+            _audio?.StopLoop(SoundId.Gacha_Rolling);
             _revealRoutine = null;
 
             // SSR 触发羁绊序章（UX §1.3：仅 SSR，1–2 屏，MVP 留钩子）

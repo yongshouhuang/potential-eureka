@@ -4,6 +4,7 @@ using XiaXia.Core.Models;
 using XiaXia.Features.Audio;
 using XiaXia.Features.Economy;
 using XiaXia.Features.Gacha;
+using XiaXia.Features.Navigation;
 using XiaXia.Features.Shared;
 using XiaXia.Features.Shared.Events;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace XiaXia.Features.Gacha.UI
         [Header("场景组件（拖拽）")]
         [SerializeField] private GachaScreenController? _gachaScreen;
         [SerializeField] private AudioService? _audioService;
+        [SerializeField] private NavigationManager? _navigation;
 
         [Header("随机种子（0=系统播种；测试可固定复现）")]
         [SerializeField] private int _seed = 1;
@@ -71,9 +73,11 @@ namespace XiaXia.Features.Gacha.UI
             var screen = _gachaScreen ?? FindObjectOfType<GachaScreenController>();
             screen?.Initialize(services, bus);
 
-            // 灰盒占位：订阅「获取符箓」意图事件并打日志；真实导航（去推图）由外部系统接管（ADR-3）。
-            bus.Subscribe<GachaAcquireIntentEvent>(e =>
-                Debug.Log($"[Gacha] AcquireIntent received: reason={e.Reason} (gray-box stub; real nav TBD)"));
+            // R1 导航层：由 NavigationManager 全权接管「获取符箓」意图事件的真实跳转
+            // （移除原 gray-box stub 订阅，避免双订阅歧义 R1-3）。
+            // 兜底：重编译等导致序列化引用丢失时，按类型在场景内查找，避免手动重新拖拽。
+            var navigation = _navigation ?? FindObjectOfType<NavigationManager>();
+            navigation?.Initialize(services, bus);
         }
     }
 }

@@ -1,14 +1,9 @@
 {
-  "name": "XiaXia.Features.Gacha.UI",
-  "rootNamespace": "XiaXia.Features.Gacha.UI",
+  "name": "XiaXia.Features.Navigation",
+  "rootNamespace": "XiaXia.Features.Navigation",
   "references": [
     "XiaXia.Core",
-    "XiaXia.Features.Shared",
-    "XiaXia.Features.Navigation",
-    "XiaXia.Features.Gacha",
-    "XiaXia.Features.Economy",
-    "XiaXia.Features.Audio",
-    "Unity.TextMeshPro"
+    "XiaXia.Features.Shared"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
