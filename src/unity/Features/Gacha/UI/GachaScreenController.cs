@@ -35,6 +35,11 @@ namespace XiaXia.Features.Gacha.UI
 
         [Header("顶栏 / 保底")]
         [SerializeField] private TextMeshProUGUI? _currencyLabel;   // 符箓（tabular，监听 currency_changed）
+        // E4（M4 eng 钩子）：符箓货币图标（ico_cur_fulu）。采用 sibling Image 方案（prefab 内与 _currencyLabel 相邻的 Image），
+        //   而非 TMP 内联 <sprite>：sibling Image 在 UGUI 下不依赖 TMP 字体资产内嵌图集、布局/对齐更可控、调试直观；
+        //   TMP 内联 sprite 备选（若后续统一图集管理）：在 _currencyLabel 文案前用 <sprite name="ico_cur_fulu"> 且需 SpriteAsset 配置。
+        //   默认 null 安全：未接图标 Image 时 SetIcon 为 no-op（余额数字仍可正常显示）。
+        [SerializeField] private Image? _iconImage;                 // 符箓图标（sibling Image，空引用待美术接入）
         [SerializeField] private PityProgressBar? _pityBar;
 
         [Header("卡池")]
@@ -216,6 +221,7 @@ namespace XiaXia.Features.Gacha.UI
             if (_gacha != null) (_soft, _hard) = _gacha.GetPityThresholds(poolId);
             var pity = _gacha?.GetPity(poolId) ?? 0;
             _pityBar?.Bind(pity, _soft, _hard);
+            RefreshPityArmed();   // E1：绑池后同步保底临近态（idle 辉光钩子）
             RefreshPullButtons();
         }
 
@@ -236,6 +242,15 @@ namespace XiaXia.Features.Gacha.UI
             if (_currencyLabel == null || _econ == null) return;
             // 绝对值：经 IEconomyService.GetBalance（H4 配套），非累加（UX §3.1）。
             _currencyLabel.text = _econ.GetBalance("fu_lu").ToString(); // 数值 tabular（inspector 设 tnum）
+        }
+
+        // E4（M4 eng 钩子）：设置符箓图标（sibling Image 方案，见 _iconImage 字段注释）。
+        //   null sprite / 未接 Image 时安全 no-op，余额数字仍可正常显示。
+        public void SetIcon(Sprite? sprite)
+        {
+            if (_iconImage == null) return;
+            _iconImage.sprite = sprite;
+            _iconImage.enabled = sprite != null;
         }
 
         // economy:currency_changed：信号到达即刷新绝对值（UI 不维护累加缓存）。
@@ -276,6 +291,18 @@ namespace XiaXia.Features.Gacha.UI
             _tenPull?.Configure($"十连 -{tenCost} 符箓", canTen && !locked, () => OnPull(10));
         }
 
+        // E1（M4 eng 钩子）：保底临近态——pity 临近硬保底时点亮主 CTA 的 PityArmed 视觉钩子（art §3.2：≥85，hard=90）。
+        //   • 阈值取「距硬保底 5 抽内」(pity >= hard-5)，数据驱动（随池 hard 阈值走，不硬编码 85）；
+        //   • 不改变可交互性（保底临近更应鼓励抽卡）；与 Disabled 正交（禁用优先，见 PullButton.SetPityArmed）。
+        private void RefreshPityArmed()
+        {
+            if (_gacha == null) return;
+            var pity = _gacha.GetPity(_poolId);
+            var armed = _hard > 0 && pity >= Mathf.Max(0, _hard - 5);
+            _singlePull?.SetPityArmed(armed);
+            _tenPull?.SetPityArmed(armed);
+        }
+
         // 单/十连入口（UX §3.1）。先可支付性预检，不足转 InsufficientCurrency。
         // 允许 PoolSelected / InsufficientCurrency / ResultList 触发，Rolling/Reveal 期间屏蔽。
         private void OnPull(int count)
@@ -289,6 +316,9 @@ namespace XiaXia.Features.Gacha.UI
             // Rolling：禁用按钮 + 灵光升腾 + rolling loop
             SetState(GachaScreenState.Rolling);
             _audio?.Play(count == 10 ? SoundId.Gacha_TenPull_Click : SoundId.Gacha_SinglePull_Click);
+            // T4 Rolling 修正 A（design note A，零接口改动）：蓄力层循环音在此启动，但「不在此停止」。
+            //   停止时机已移至首张 Gacha_Card_Flip_Start 触发之后（见 RevealSequence 内 StopLoop 调用点），
+            //   确保滚动蓄力层完整播完、可听，避免「蓄力层近不可闻」（m4-audio-closure R1）。
             _audio?.PlayLoop(SoundId.Gacha_Rolling);
 
             var results = _gacha!.Pull(_poolId, count); // 同步返回有序结果（M2 实现）
@@ -302,6 +332,7 @@ namespace XiaXia.Features.Gacha.UI
                 else if (cross == PityModel.Crossing.Soft) _audio?.Play(SoundId.Gacha_Pity_Near);
             }
             _pityBar?.Bind(newPity, _soft, _hard);
+            RefreshPityArmed();   // E1：Pull 后保底值已更新，重算临近态钩子
 
             // Reveal：消费 results 排错峰时间轴（audio §3.3，不随原始事件齐发）
             _revealRoutine = StartCoroutine(RevealSequence(results));
@@ -330,6 +361,9 @@ namespace XiaXia.Features.Gacha.UI
                     if (card == null) return;
                     _revealCards.Add(card);
                     _audio?.Play(SoundId.Gacha_Card_Flip_Start);          // t=0.00 起手 whoosh
+                    // T4 Rolling 修正 A：首张翻牌开始后才停蓄力层循环音（design note A）。
+                    //   旧实现 StopLoop 紧跟 Pull() 同步调用，蓄力层微秒级被停→近不可闻；
+                    //   现锚定到首张 Flip_Start 之后，蓄力层完整可听。StopLoop 幂等，后续卡的同类调用为 no-op。
                     _audio?.StopLoop(SoundId.Gacha_Rolling);
                     card.Flip?.BeginFlip(_reduceMotion);                  // 起手翻面（reduce_motion→瞬判定格）
                 })));
@@ -362,7 +396,7 @@ namespace XiaXia.Features.Gacha.UI
 
             // 收尾：确保全部定格（含未跑完的跳过情况）
             foreach (var c in _revealCards) c.Flip?.ForceFront();
-            _audio?.StopLoop(SoundId.Gacha_Rolling);
+            _audio?.StopLoop(SoundId.Gacha_Rolling); // T4 兜底：跳过/异常收尾时确保蓄力层循环音停止
             _revealRoutine = null;
 
             // SSR 触发羁绊序章（UX §1.3：仅 SSR，1–2 屏，MVP 留钩子）
